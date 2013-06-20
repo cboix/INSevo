@@ -1,0 +1,6 @@
+#!/bin/bash
+# make sure the target inputs are sorted!
+cat ~/db/Annotation/dmel-all-r5.51.gff | awk '$2~/FlyBase/ && $3~/gene/{gsub("ID=",";",$0); gsub("Name=","n;",$0);print}' |awk 'BEGIN{FS=";"; OFS="\t"}{print $4,$1}' | sort +0 -1 > a
+awk '{print $1}' $1 | sort +0 -1 > b
+join b a > dmel_targets
+rm a b
