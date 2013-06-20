@@ -1,0 +1,45 @@
+#Vcftools code to separate the chromosomes of interest:
+/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 2L --recode --out 2L
+/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 2R --recode --out 2R
+/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 3L --recode --out 3L
+/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 3R --recode --out 3R
+/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr X --recode --out X
+#Awk program to pick out SNPs of interest (from the dmel_targets genes):
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > Akt1_recode.vcf
+awk ' $1 ~ 2R && $2 >= FlyBase && $3 <= gene ' 2R.recode.vcf > CAP_recode.vcf
+awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > chico_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > dm_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > eIF-4E_recode.vcf
+awk ' $1 ~ 2R && $2 >= FlyBase && $3 <= gene ' 2R.recode.vcf > Flo-1_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > Flo-2_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > foxo_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > gig_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp1_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp2_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp3_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp4_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp5_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > Ilp6_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > Ilp7_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > InR_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > lkb1_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Pdk1_recode.vcf
+awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > Pi3K21B_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > Pi3K92E_recode.vcf
+awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > Pten_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > RagA-B_recode.vcf
+awk ' $1 ~ 2R && $2 >= FlyBase && $3 <= gene ' 2R.recode.vcf > RagC-D_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > raptor_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > Rheb_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > rictor_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > RpS6_recode.vcf
+awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > S6k_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > sgg_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > sima_recode.vcf
+awk ' $1 ~ 2R && $2 >= FlyBase && $3 <= gene ' 2R.recode.vcf > Sin1_recode.vcf
+awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > SNF1A_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > SNF4Agamma_recode.vcf
+awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > step_recode.vcf
+awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > Thor_recode.vcf
+awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > Tor_recode.vcf
+awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > Tsc1_recode.vcf

@@ -1,0 +1,2 @@
+#!/bin/bash
+awk '$8!~/\./' f.vcf > finfo.vcf
