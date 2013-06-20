@@ -5,41 +5,41 @@
 /net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 3R --recode --out 3R
 /net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr X --recode --out X
 #Awk program to pick out SNPs of interest (from the dmel_targets genes):
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > Akt1_recode.vcf
-awk ' $1 ~ 2R && $2 >= FlyBase && $3 <= gene ' 2R.recode.vcf > CAP_recode.vcf
-awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > chico_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > dm_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > eIF-4E_recode.vcf
-awk ' $1 ~ 2R && $2 >= FlyBase && $3 <= gene ' 2R.recode.vcf > Flo-1_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > Flo-2_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > foxo_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > gig_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp1_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp2_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp3_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp4_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Ilp5_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > Ilp6_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > Ilp7_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > InR_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > lkb1_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > Pdk1_recode.vcf
-awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > Pi3K21B_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > Pi3K92E_recode.vcf
-awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > Pten_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > RagA-B_recode.vcf
-awk ' $1 ~ 2R && $2 >= FlyBase && $3 <= gene ' 2R.recode.vcf > RagC-D_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > raptor_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > Rheb_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > rictor_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > RpS6_recode.vcf
-awk ' $1 ~ 3L && $2 >= FlyBase && $3 <= gene ' 3L.recode.vcf > S6k_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > sgg_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > sima_recode.vcf
-awk ' $1 ~ 2R && $2 >= FlyBase && $3 <= gene ' 2R.recode.vcf > Sin1_recode.vcf
-awk ' $1 ~ X && $2 >= FlyBase && $3 <= gene ' X.recode.vcf > SNF1A_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > SNF4Agamma_recode.vcf
-awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > step_recode.vcf
-awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > Thor_recode.vcf
-awk ' $1 ~ 2L && $2 >= FlyBase && $3 <= gene ' 2L.recode.vcf > Tor_recode.vcf
-awk ' $1 ~ 3R && $2 >= FlyBase && $3 <= gene ' 3R.recode.vcf > Tsc1_recode.vcf
+awk ' $2 >= 11924938 && $3 <= 11930239 ' 3R.recode.vcf > Akt1_recode.vcf
+awk ' $2 >= 6156521 && $3 <= 6194529 ' 2R.recode.vcf > CAP_recode.vcf
+awk ' $2 >= 10242512 && $3 <= 10247078 ' 2L.recode.vcf > chico_recode.vcf
+awk ' $2 >= 3267192 && $3 <= 3285730 ' X.recode.vcf > dm_recode.vcf
+awk ' $2 >= 9392718 && $3 <= 9395560 ' 3L.recode.vcf > eIF-4E_recode.vcf
+awk ' $2 >= 11453776 && $3 <= 11456909 ' 2R.recode.vcf > Flo-1_recode.vcf
+awk ' $2 >= 14733407 && $3 <= 14827616 ' X.recode.vcf > Flo-2_recode.vcf
+awk ' $2 >= 9882667 && $3 <= 9913700 ' 3R.recode.vcf > foxo_recode.vcf
+awk ' $2 >= 20122281 && $3 <= 20132110 ' 3L.recode.vcf > gig_recode.vcf
+awk ' $2 >= 9791534 && $3 <= 9791998 ' 3L.recode.vcf > Ilp1_recode.vcf
+awk ' $2 >= 9792798 && $3 <= 9793540 ' 3L.recode.vcf > Ilp2_recode.vcf
+awk ' $2 >= 9794398 && $3 <= 9795220 ' 3L.recode.vcf > Ilp3_recode.vcf
+awk ' $2 >= 9796499 && $3 <= 9797363 ' 3L.recode.vcf > Ilp4_recode.vcf
+awk ' $2 >= 9816449 && $3 <= 9816997 ' 3L.recode.vcf > Ilp5_recode.vcf
+awk ' $2 >= 2225526 && $3 <= 2228691 ' X.recode.vcf > Ilp6_recode.vcf
+awk ' $2 >= 3561654 && $3 <= 3562878 ' X.recode.vcf > Ilp7_recode.vcf
+awk ' $2 >= 17395970 && $3 <= 17445043 ' 3R.recode.vcf > InR_recode.vcf
+awk ' $2 >= 9502271 && $3 <= 9505152 ' 3R.recode.vcf > lkb1_recode.vcf
+awk ' $2 >= 129450 && $3 <= 145895 ' 3L.recode.vcf > Pdk1_recode.vcf
+awk ' $2 >= 297880 && $3 <= 305233 ' 2L.recode.vcf > Pi3K21B_recode.vcf
+awk ' $2 >= 16454694 && $3 <= 16460454 ' 3R.recode.vcf > Pi3K92E_recode.vcf
+awk ' $2 >= 10256319 && $3 <= 10261049 ' 2L.recode.vcf > Pten_recode.vcf
+awk ' $2 >= 4808454 && $3 <= 4810029 ' 3R.recode.vcf > RagA-B_recode.vcf
+awk ' $2 >= 4049184 && $3 <= 4051005 ' 2R.recode.vcf > RagC-D_recode.vcf
+awk ' $2 >= 5976692 && $3 <= 5984234 ' X.recode.vcf > raptor_recode.vcf
+awk ' $2 >= 1394643 && $3 <= 1396213 ' 3R.recode.vcf > Rheb_recode.vcf
+awk ' $2 >= 19146144 && $3 <= 19155259 ' X.recode.vcf > rictor_recode.vcf
+awk ' $2 >= 7793653 && $3 <= 7795362 ' X.recode.vcf > RpS6_recode.vcf
+awk ' $2 >= 5790649 && $3 <= 5804031 ' 3L.recode.vcf > S6k_recode.vcf
+awk ' $2 >= 2527985 && $3 <= 2571879 ' X.recode.vcf > sgg_recode.vcf
+awk ' $2 >= 25884033 && $3 <= 25947520 ' 3R.recode.vcf > sima_recode.vcf
+awk ' $2 >= 10299330 && $3 <= 10301356 ' 2R.recode.vcf > Sin1_recode.vcf
+awk ' $2 >= 1269569 && $3 <= 1272929 ' X.recode.vcf > SNF1A_recode.vcf
+awk ' $2 >= 16966461 && $3 <= 17039991 ' 3R.recode.vcf > SNF4Agamma_recode.vcf
+awk ' $2 >= 21740041 && $3 <= 21757466 ' 2L.recode.vcf > step_recode.vcf
+awk ' $2 >= 3478434 && $3 <= 3479612 ' 2L.recode.vcf > Thor_recode.vcf
+awk ' $2 >= 13004480 && $3 <= 13013197 ' 2L.recode.vcf > Tor_recode.vcf
+awk ' $2 >= 19956029 && $3 <= 19960376 ' 3R.recode.vcf > Tsc1_recode.vcf

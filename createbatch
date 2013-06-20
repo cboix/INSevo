@@ -6,7 +6,7 @@ awk '{print $2}' ~/project/dmel_targets | sort | uniq | awk '{print"/net/home/ca
 
 #An awk program that writes an awk program:
 echo "#Awk program to pick out SNPs of interest (from the dmel_targets genes):" >> batchbychr
-awk '{a=sprintf("%s_recode.vcf",$1);b=sprintf("%s.recode.vcf",$2); print "awk \x27 $1 ~",$2,"&& $2 >=",$3,"&& $3 <=",$4,"\x27",b,">",a}' ~/project/dmel_targets >> batchbychr
+awk '{a=sprintf("%s_recode.vcf",$1);b=sprintf("%s.recode.vcf",$2); print "awk \x27 $2 >=",$5,"&& $3 <=",$6,"\x27",b,">",a}' ~/project/dmel_targets >> batchbychr
 
 #Enable execution
 chmod +x batchbychr
