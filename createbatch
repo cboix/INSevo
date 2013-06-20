@@ -2,7 +2,8 @@
 #awk program -- chr = $2, bp = $3, $4, name = $1
 #First print a command to separate all of the chromosomes:
 echo "#Vcftools code to separate the chromosomes of interest:" > batchbychr
-awk '{print $2}' ~/project/dmel_targets | sort | uniq | awk '{print"/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr",$1,"--recode --out",$1}' >> batchbychr
+awk '{print $2}' ~/project/dmel_targets | sort | uniq | awk '{a=sprintf("%s.recode.vcf",$1); print"awk \x27 $1 ~",$1,"\x27 f.vcf >",a}' >> batchbychr
+#awk '{print"/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr",$1,"--recode --out",$1}' >> batchbychr
 
 #An awk program that writes an awk program:
 echo "#Awk program to pick out SNPs of interest (from the dmel_targets genes):" >> batchbychr

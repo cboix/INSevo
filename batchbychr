@@ -1,9 +1,9 @@
 #Vcftools code to separate the chromosomes of interest:
-/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 2L --recode --out 2L
-/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 2R --recode --out 2R
-/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 3L --recode --out 3L
-/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr 3R --recode --out 3R
-/net/home/carlesba/bin/vcftools_0.1.11/bin/vcftools --vcf f.vcf --chr X --recode --out X
+awk ' $1 ~ 2L ' f.vcf > 2L.recode.vcf
+awk ' $1 ~ 2R ' f.vcf > 2R.recode.vcf
+awk ' $1 ~ 3L ' f.vcf > 3L.recode.vcf
+awk ' $1 ~ 3R ' f.vcf > 3R.recode.vcf
+awk ' $1 ~ X ' f.vcf > X.recode.vcf
 #Awk program to pick out SNPs of interest (from the dmel_targets genes):
 awk ' $2 >= 11924938 && $3 <= 11930239 ' 3R.recode.vcf > Akt1_recode.vcf
 awk ' $2 >= 6156521 && $3 <= 6194529 ' 2R.recode.vcf > CAP_recode.vcf
