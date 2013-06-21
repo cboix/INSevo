@@ -1,0 +1,3 @@
+#!/bin/bash
+#Index vcf file and return index, chromosome, position on chromosome, and info ONLY.
+awk '$1 !~ /#/ {print NR,$1, $2,$8}' f.vcf > indexes.vcf
