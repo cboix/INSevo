@@ -1,2 +1,0 @@
-#!/bin/bash
-awk '{print NR, $0}' f.vcf > F.vcf

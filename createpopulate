@@ -4,7 +4,13 @@
 #      b=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1);
 #	print "awk \x27 BEGIN{split(\"\",a);i=1;while((getline b <",a,") > 0){a[i] = b; i++;}; i=1;} NR == a[i]{print a[i],$0; if(a[i+1] > 0){i++;};} \x27 f.vcf >",b;}' ~/project/dmel_targets > populate
 
-awk '{a=sprintf("~/db/DGRP/indexedgenes/%s_recode.vcf",$1); b=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); print " awk \x27 {print $1} \x27",a," | join -j 1 F.vcf >",b}' dmel_targets > populate
+#awk '{a=sprintf("~/db/DGRP/indexedgenes/%s_recode.vcf",$1); b=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); print " awk \x27 {print $1} \x27",a," | join -j 1 F.vcf >",b}' ~/project/dmel_targets > populate
 
+echo "#!/bin/bash" > crpop2
+echo "#!/bin/bash" > populate
+awk '{a=sprintf("~/db/DGRP/indexedgenes/%s_recode.vcf",$1); b=sprintf("\"~/db/DGRP/fullgenes/%s_full.vcf\"",$1); print "awk \x27 NR==1{c=$1}END{d=$1;e=sprintf(\"\\x27%s,%sp;\\x27\",c,d); print \"sed -n\",e,\" f.vcf >\",",b,"}\x27",a," >> populate"}' ~/project/dmel_targets > crpop2
+
+chmod +x crpop2
+./crpop2
 chmod +x populate
-#awk 'BEGIN{split("",a);i=1;while( (getline b < "indexedgenes/Ilp1_recode.vcf") > 0){a[i] = b;i++;}; i=1;}NR == a[i]{print a[i],$0; i++;}' f.vcf > test1 
+#sed -n '4315744,4315852 p' F.vcf > a 
