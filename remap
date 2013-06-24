@@ -198,5 +198,44 @@ awk '{print $4,$5}' ~/db/DGRP/fullgenes/step_full.vcf | paste ~/db/DGRP/simulgen
 awk '{print $4,$5}' ~/db/DGRP/fullgenes/Thor_full.vcf | paste ~/db/DGRP/simulgenes/Thortmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Thor_sim.bed
 awk '{print $4,$5}' ~/db/DGRP/fullgenes/Tor_full.vcf | paste ~/db/DGRP/simulgenes/Tortmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Tor_sim.bed
 awk '{print $4,$5}' ~/db/DGRP/fullgenes/Tsc1_full.vcf | paste ~/db/DGRP/simulgenes/Tsc1tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Tsc1_sim.bed
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Akt1_sim.bed > ~/db/DGRP/simulgenes/Akt1_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/CAP_sim.bed > ~/db/DGRP/simulgenes/CAP_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/chico_sim.bed > ~/db/DGRP/simulgenes/chico_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/dm_sim.bed > ~/db/DGRP/simulgenes/dm_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/eIF-4E_sim.bed > ~/db/DGRP/simulgenes/eIF-4E_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Flo-1_sim.bed > ~/db/DGRP/simulgenes/Flo-1_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Flo-2_sim.bed > ~/db/DGRP/simulgenes/Flo-2_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/foxo_sim.bed > ~/db/DGRP/simulgenes/foxo_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/gig_sim.bed > ~/db/DGRP/simulgenes/gig_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Ilp1_sim.bed > ~/db/DGRP/simulgenes/Ilp1_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Ilp2_sim.bed > ~/db/DGRP/simulgenes/Ilp2_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Ilp3_sim.bed > ~/db/DGRP/simulgenes/Ilp3_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Ilp4_sim.bed > ~/db/DGRP/simulgenes/Ilp4_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Ilp5_sim.bed > ~/db/DGRP/simulgenes/Ilp5_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Ilp6_sim.bed > ~/db/DGRP/simulgenes/Ilp6_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Ilp7_sim.bed > ~/db/DGRP/simulgenes/Ilp7_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/InR_sim.bed > ~/db/DGRP/simulgenes/InR_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/lkb1_sim.bed > ~/db/DGRP/simulgenes/lkb1_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Pdk1_sim.bed > ~/db/DGRP/simulgenes/Pdk1_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Pi3K21B_sim.bed > ~/db/DGRP/simulgenes/Pi3K21B_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Pi3K92E_sim.bed > ~/db/DGRP/simulgenes/Pi3K92E_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Pten_sim.bed > ~/db/DGRP/simulgenes/Pten_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/RagA-B_sim.bed > ~/db/DGRP/simulgenes/RagA-B_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/RagC-D_sim.bed > ~/db/DGRP/simulgenes/RagC-D_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/raptor_sim.bed > ~/db/DGRP/simulgenes/raptor_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Rheb_sim.bed > ~/db/DGRP/simulgenes/Rheb_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/rictor_sim.bed > ~/db/DGRP/simulgenes/rictor_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/RpS6_sim.bed > ~/db/DGRP/simulgenes/RpS6_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/S6k_sim.bed > ~/db/DGRP/simulgenes/S6k_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/sgg_sim.bed > ~/db/DGRP/simulgenes/sgg_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/sima_sim.bed > ~/db/DGRP/simulgenes/sima_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Sin1_sim.bed > ~/db/DGRP/simulgenes/Sin1_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chrXsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/SNF1A_sim.bed > ~/db/DGRP/simulgenes/SNF1A_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/SNF4Agamma_sim.bed > ~/db/DGRP/simulgenes/SNF4Agamma_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/step_sim.bed > ~/db/DGRP/simulgenes/step_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Thor_sim.bed > ~/db/DGRP/simulgenes/Thor_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr2Lsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Tor_sim.bed > ~/db/DGRP/simulgenes/Tor_fin
+awk ' BEGIN{ getline read < ~/db/SimV1/chr3Rsim ;}{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/DGRP/simulgenes/Tsc1_sim.bed > ~/db/DGRP/simulgenes/Tsc1_fin
 
-rm ~/db/DGRP/simulgenes/*tmp.bed
+#Clear files that will not be used anymore:
+rm ~/db/DGRP/simulgenes/*tmp.bed echo -e rm ~/db/DGRP/simulgenes/*_del.bed
