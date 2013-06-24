@@ -1,0 +1,202 @@
+#!/bin/bash
+echo 'Creating bed files' 
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Akt1_full.vcf > ~/db/DGRP/fullgenes/Akt1.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/CAP_full.vcf > ~/db/DGRP/fullgenes/CAP.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/chico_full.vcf > ~/db/DGRP/fullgenes/chico.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/dm_full.vcf > ~/db/DGRP/fullgenes/dm.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/eIF-4E_full.vcf > ~/db/DGRP/fullgenes/eIF-4E.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Flo-1_full.vcf > ~/db/DGRP/fullgenes/Flo-1.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Flo-2_full.vcf > ~/db/DGRP/fullgenes/Flo-2.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/foxo_full.vcf > ~/db/DGRP/fullgenes/foxo.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/gig_full.vcf > ~/db/DGRP/fullgenes/gig.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Ilp1_full.vcf > ~/db/DGRP/fullgenes/Ilp1.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Ilp2_full.vcf > ~/db/DGRP/fullgenes/Ilp2.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Ilp3_full.vcf > ~/db/DGRP/fullgenes/Ilp3.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Ilp4_full.vcf > ~/db/DGRP/fullgenes/Ilp4.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Ilp5_full.vcf > ~/db/DGRP/fullgenes/Ilp5.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Ilp6_full.vcf > ~/db/DGRP/fullgenes/Ilp6.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Ilp7_full.vcf > ~/db/DGRP/fullgenes/Ilp7.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/InR_full.vcf > ~/db/DGRP/fullgenes/InR.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/lkb1_full.vcf > ~/db/DGRP/fullgenes/lkb1.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Pdk1_full.vcf > ~/db/DGRP/fullgenes/Pdk1.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Pi3K21B_full.vcf > ~/db/DGRP/fullgenes/Pi3K21B.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Pi3K92E_full.vcf > ~/db/DGRP/fullgenes/Pi3K92E.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Pten_full.vcf > ~/db/DGRP/fullgenes/Pten.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/RagA-B_full.vcf > ~/db/DGRP/fullgenes/RagA-B.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/RagC-D_full.vcf > ~/db/DGRP/fullgenes/RagC-D.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/raptor_full.vcf > ~/db/DGRP/fullgenes/raptor.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Rheb_full.vcf > ~/db/DGRP/fullgenes/Rheb.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/rictor_full.vcf > ~/db/DGRP/fullgenes/rictor.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/RpS6_full.vcf > ~/db/DGRP/fullgenes/RpS6.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/S6k_full.vcf > ~/db/DGRP/fullgenes/S6k.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/sgg_full.vcf > ~/db/DGRP/fullgenes/sgg.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/sima_full.vcf > ~/db/DGRP/fullgenes/sima.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Sin1_full.vcf > ~/db/DGRP/fullgenes/Sin1.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/SNF1A_full.vcf > ~/db/DGRP/fullgenes/SNF1A.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/SNF4Agamma_full.vcf > ~/db/DGRP/fullgenes/SNF4Agamma.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/step_full.vcf > ~/db/DGRP/fullgenes/step.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Thor_full.vcf > ~/db/DGRP/fullgenes/Thor.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Tor_full.vcf > ~/db/DGRP/fullgenes/Tor.bed
+awk '{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' ~/db/DGRP/fullgenes/Tsc1_full.vcf > ~/db/DGRP/fullgenes/Tsc1.bed
+
+#Find simulans remaps for necessary genes
+echo 'Using LiftOver to remap' 
+liftOver ~/db/DGRP/fullgenes/Akt1.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Akt1_sim.bed ~/db/DGRP/simulgenes/Akt1_del.bed
+liftOver ~/db/DGRP/fullgenes/CAP.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/CAP_sim.bed ~/db/DGRP/simulgenes/CAP_del.bed
+liftOver ~/db/DGRP/fullgenes/chico.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/chico_sim.bed ~/db/DGRP/simulgenes/chico_del.bed
+liftOver ~/db/DGRP/fullgenes/dm.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/dm_sim.bed ~/db/DGRP/simulgenes/dm_del.bed
+liftOver ~/db/DGRP/fullgenes/eIF-4E.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/eIF-4E_sim.bed ~/db/DGRP/simulgenes/eIF-4E_del.bed
+liftOver ~/db/DGRP/fullgenes/Flo-1.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Flo-1_sim.bed ~/db/DGRP/simulgenes/Flo-1_del.bed
+liftOver ~/db/DGRP/fullgenes/Flo-2.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Flo-2_sim.bed ~/db/DGRP/simulgenes/Flo-2_del.bed
+liftOver ~/db/DGRP/fullgenes/foxo.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/foxo_sim.bed ~/db/DGRP/simulgenes/foxo_del.bed
+liftOver ~/db/DGRP/fullgenes/gig.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/gig_sim.bed ~/db/DGRP/simulgenes/gig_del.bed
+liftOver ~/db/DGRP/fullgenes/Ilp1.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Ilp1_sim.bed ~/db/DGRP/simulgenes/Ilp1_del.bed
+liftOver ~/db/DGRP/fullgenes/Ilp2.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Ilp2_sim.bed ~/db/DGRP/simulgenes/Ilp2_del.bed
+liftOver ~/db/DGRP/fullgenes/Ilp3.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Ilp3_sim.bed ~/db/DGRP/simulgenes/Ilp3_del.bed
+liftOver ~/db/DGRP/fullgenes/Ilp4.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Ilp4_sim.bed ~/db/DGRP/simulgenes/Ilp4_del.bed
+liftOver ~/db/DGRP/fullgenes/Ilp5.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Ilp5_sim.bed ~/db/DGRP/simulgenes/Ilp5_del.bed
+liftOver ~/db/DGRP/fullgenes/Ilp6.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Ilp6_sim.bed ~/db/DGRP/simulgenes/Ilp6_del.bed
+liftOver ~/db/DGRP/fullgenes/Ilp7.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Ilp7_sim.bed ~/db/DGRP/simulgenes/Ilp7_del.bed
+liftOver ~/db/DGRP/fullgenes/InR.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/InR_sim.bed ~/db/DGRP/simulgenes/InR_del.bed
+liftOver ~/db/DGRP/fullgenes/lkb1.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/lkb1_sim.bed ~/db/DGRP/simulgenes/lkb1_del.bed
+liftOver ~/db/DGRP/fullgenes/Pdk1.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Pdk1_sim.bed ~/db/DGRP/simulgenes/Pdk1_del.bed
+liftOver ~/db/DGRP/fullgenes/Pi3K21B.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Pi3K21B_sim.bed ~/db/DGRP/simulgenes/Pi3K21B_del.bed
+liftOver ~/db/DGRP/fullgenes/Pi3K92E.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Pi3K92E_sim.bed ~/db/DGRP/simulgenes/Pi3K92E_del.bed
+liftOver ~/db/DGRP/fullgenes/Pten.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Pten_sim.bed ~/db/DGRP/simulgenes/Pten_del.bed
+liftOver ~/db/DGRP/fullgenes/RagA-B.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/RagA-B_sim.bed ~/db/DGRP/simulgenes/RagA-B_del.bed
+liftOver ~/db/DGRP/fullgenes/RagC-D.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/RagC-D_sim.bed ~/db/DGRP/simulgenes/RagC-D_del.bed
+liftOver ~/db/DGRP/fullgenes/raptor.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/raptor_sim.bed ~/db/DGRP/simulgenes/raptor_del.bed
+liftOver ~/db/DGRP/fullgenes/Rheb.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Rheb_sim.bed ~/db/DGRP/simulgenes/Rheb_del.bed
+liftOver ~/db/DGRP/fullgenes/rictor.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/rictor_sim.bed ~/db/DGRP/simulgenes/rictor_del.bed
+liftOver ~/db/DGRP/fullgenes/RpS6.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/RpS6_sim.bed ~/db/DGRP/simulgenes/RpS6_del.bed
+liftOver ~/db/DGRP/fullgenes/S6k.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/S6k_sim.bed ~/db/DGRP/simulgenes/S6k_del.bed
+liftOver ~/db/DGRP/fullgenes/sgg.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/sgg_sim.bed ~/db/DGRP/simulgenes/sgg_del.bed
+liftOver ~/db/DGRP/fullgenes/sima.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/sima_sim.bed ~/db/DGRP/simulgenes/sima_del.bed
+liftOver ~/db/DGRP/fullgenes/Sin1.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Sin1_sim.bed ~/db/DGRP/simulgenes/Sin1_del.bed
+liftOver ~/db/DGRP/fullgenes/SNF1A.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/SNF1A_sim.bed ~/db/DGRP/simulgenes/SNF1A_del.bed
+liftOver ~/db/DGRP/fullgenes/SNF4Agamma.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/SNF4Agamma_sim.bed ~/db/DGRP/simulgenes/SNF4Agamma_del.bed
+liftOver ~/db/DGRP/fullgenes/step.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/step_sim.bed ~/db/DGRP/simulgenes/step_del.bed
+liftOver ~/db/DGRP/fullgenes/Thor.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Thor_sim.bed ~/db/DGRP/simulgenes/Thor_del.bed
+liftOver ~/db/DGRP/fullgenes/Tor.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Tor_sim.bed ~/db/DGRP/simulgenes/Tor_del.bed
+liftOver ~/db/DGRP/fullgenes/Tsc1.bed ~/db/LiftOver/dm3ToDroSim1.over.chain ~/db/DGRP/simulgenes/Tsc1_sim.bed ~/db/DGRP/simulgenes/Tsc1_del.bed
+
+#To join deletion information with the remaps:
+echo 'Joining w/ Deletions'
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Akt1_del.bed >> ~/db/DGRP/simulgenes/Akt1_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/CAP_del.bed >> ~/db/DGRP/simulgenes/CAP_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/chico_del.bed >> ~/db/DGRP/simulgenes/chico_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/dm_del.bed >> ~/db/DGRP/simulgenes/dm_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/eIF-4E_del.bed >> ~/db/DGRP/simulgenes/eIF-4E_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Flo-1_del.bed >> ~/db/DGRP/simulgenes/Flo-1_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Flo-2_del.bed >> ~/db/DGRP/simulgenes/Flo-2_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/foxo_del.bed >> ~/db/DGRP/simulgenes/foxo_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/gig_del.bed >> ~/db/DGRP/simulgenes/gig_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Ilp1_del.bed >> ~/db/DGRP/simulgenes/Ilp1_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Ilp2_del.bed >> ~/db/DGRP/simulgenes/Ilp2_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Ilp3_del.bed >> ~/db/DGRP/simulgenes/Ilp3_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Ilp4_del.bed >> ~/db/DGRP/simulgenes/Ilp4_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Ilp5_del.bed >> ~/db/DGRP/simulgenes/Ilp5_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Ilp6_del.bed >> ~/db/DGRP/simulgenes/Ilp6_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Ilp7_del.bed >> ~/db/DGRP/simulgenes/Ilp7_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/InR_del.bed >> ~/db/DGRP/simulgenes/InR_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/lkb1_del.bed >> ~/db/DGRP/simulgenes/lkb1_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Pdk1_del.bed >> ~/db/DGRP/simulgenes/Pdk1_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Pi3K21B_del.bed >> ~/db/DGRP/simulgenes/Pi3K21B_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Pi3K92E_del.bed >> ~/db/DGRP/simulgenes/Pi3K92E_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Pten_del.bed >> ~/db/DGRP/simulgenes/Pten_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/RagA-B_del.bed >> ~/db/DGRP/simulgenes/RagA-B_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/RagC-D_del.bed >> ~/db/DGRP/simulgenes/RagC-D_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/raptor_del.bed >> ~/db/DGRP/simulgenes/raptor_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Rheb_del.bed >> ~/db/DGRP/simulgenes/Rheb_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/rictor_del.bed >> ~/db/DGRP/simulgenes/rictor_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/RpS6_del.bed >> ~/db/DGRP/simulgenes/RpS6_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/S6k_del.bed >> ~/db/DGRP/simulgenes/S6k_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/sgg_del.bed >> ~/db/DGRP/simulgenes/sgg_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/sima_del.bed >> ~/db/DGRP/simulgenes/sima_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Sin1_del.bed >> ~/db/DGRP/simulgenes/Sin1_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/SNF1A_del.bed >> ~/db/DGRP/simulgenes/SNF1A_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/SNF4Agamma_del.bed >> ~/db/DGRP/simulgenes/SNF4Agamma_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/step_del.bed >> ~/db/DGRP/simulgenes/step_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Thor_del.bed >> ~/db/DGRP/simulgenes/Thor_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Tor_del.bed >> ~/db/DGRP/simulgenes/Tor_sim.bed
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/Tsc1_del.bed >> ~/db/DGRP/simulgenes/Tsc1_sim.bed
+
+#To join remapped info w/ dmel genes for comparison against sim db
+sort -nk 4 ~/db/DGRP/simulgenes/Akt1_sim.bed > ~/db/DGRP/simulgenes/Akt1tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/CAP_sim.bed > ~/db/DGRP/simulgenes/CAPtmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/chico_sim.bed > ~/db/DGRP/simulgenes/chicotmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/dm_sim.bed > ~/db/DGRP/simulgenes/dmtmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/eIF-4E_sim.bed > ~/db/DGRP/simulgenes/eIF-4Etmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Flo-1_sim.bed > ~/db/DGRP/simulgenes/Flo-1tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Flo-2_sim.bed > ~/db/DGRP/simulgenes/Flo-2tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/foxo_sim.bed > ~/db/DGRP/simulgenes/foxotmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/gig_sim.bed > ~/db/DGRP/simulgenes/gigtmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Ilp1_sim.bed > ~/db/DGRP/simulgenes/Ilp1tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Ilp2_sim.bed > ~/db/DGRP/simulgenes/Ilp2tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Ilp3_sim.bed > ~/db/DGRP/simulgenes/Ilp3tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Ilp4_sim.bed > ~/db/DGRP/simulgenes/Ilp4tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Ilp5_sim.bed > ~/db/DGRP/simulgenes/Ilp5tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Ilp6_sim.bed > ~/db/DGRP/simulgenes/Ilp6tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Ilp7_sim.bed > ~/db/DGRP/simulgenes/Ilp7tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/InR_sim.bed > ~/db/DGRP/simulgenes/InRtmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/lkb1_sim.bed > ~/db/DGRP/simulgenes/lkb1tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Pdk1_sim.bed > ~/db/DGRP/simulgenes/Pdk1tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Pi3K21B_sim.bed > ~/db/DGRP/simulgenes/Pi3K21Btmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Pi3K92E_sim.bed > ~/db/DGRP/simulgenes/Pi3K92Etmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Pten_sim.bed > ~/db/DGRP/simulgenes/Ptentmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/RagA-B_sim.bed > ~/db/DGRP/simulgenes/RagA-Btmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/RagC-D_sim.bed > ~/db/DGRP/simulgenes/RagC-Dtmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/raptor_sim.bed > ~/db/DGRP/simulgenes/raptortmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Rheb_sim.bed > ~/db/DGRP/simulgenes/Rhebtmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/rictor_sim.bed > ~/db/DGRP/simulgenes/rictortmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/RpS6_sim.bed > ~/db/DGRP/simulgenes/RpS6tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/S6k_sim.bed > ~/db/DGRP/simulgenes/S6ktmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/sgg_sim.bed > ~/db/DGRP/simulgenes/sggtmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/sima_sim.bed > ~/db/DGRP/simulgenes/simatmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Sin1_sim.bed > ~/db/DGRP/simulgenes/Sin1tmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/SNF1A_sim.bed > ~/db/DGRP/simulgenes/SNF1Atmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/SNF4Agamma_sim.bed > ~/db/DGRP/simulgenes/SNF4Agammatmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/step_sim.bed > ~/db/DGRP/simulgenes/steptmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Thor_sim.bed > ~/db/DGRP/simulgenes/Thortmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Tor_sim.bed > ~/db/DGRP/simulgenes/Tortmp.bed
+sort -nk 4 ~/db/DGRP/simulgenes/Tsc1_sim.bed > ~/db/DGRP/simulgenes/Tsc1tmp.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Akt1_full.vcf | paste ~/db/DGRP/simulgenes/Akt1tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Akt1_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/CAP_full.vcf | paste ~/db/DGRP/simulgenes/CAPtmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/CAP_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/chico_full.vcf | paste ~/db/DGRP/simulgenes/chicotmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/chico_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/dm_full.vcf | paste ~/db/DGRP/simulgenes/dmtmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/dm_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/eIF-4E_full.vcf | paste ~/db/DGRP/simulgenes/eIF-4Etmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/eIF-4E_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Flo-1_full.vcf | paste ~/db/DGRP/simulgenes/Flo-1tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Flo-1_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Flo-2_full.vcf | paste ~/db/DGRP/simulgenes/Flo-2tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Flo-2_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/foxo_full.vcf | paste ~/db/DGRP/simulgenes/foxotmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/foxo_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/gig_full.vcf | paste ~/db/DGRP/simulgenes/gigtmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/gig_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Ilp1_full.vcf | paste ~/db/DGRP/simulgenes/Ilp1tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Ilp1_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Ilp2_full.vcf | paste ~/db/DGRP/simulgenes/Ilp2tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Ilp2_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Ilp3_full.vcf | paste ~/db/DGRP/simulgenes/Ilp3tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Ilp3_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Ilp4_full.vcf | paste ~/db/DGRP/simulgenes/Ilp4tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Ilp4_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Ilp5_full.vcf | paste ~/db/DGRP/simulgenes/Ilp5tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Ilp5_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Ilp6_full.vcf | paste ~/db/DGRP/simulgenes/Ilp6tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Ilp6_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Ilp7_full.vcf | paste ~/db/DGRP/simulgenes/Ilp7tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Ilp7_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/InR_full.vcf | paste ~/db/DGRP/simulgenes/InRtmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/InR_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/lkb1_full.vcf | paste ~/db/DGRP/simulgenes/lkb1tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/lkb1_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Pdk1_full.vcf | paste ~/db/DGRP/simulgenes/Pdk1tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Pdk1_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Pi3K21B_full.vcf | paste ~/db/DGRP/simulgenes/Pi3K21Btmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Pi3K21B_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Pi3K92E_full.vcf | paste ~/db/DGRP/simulgenes/Pi3K92Etmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Pi3K92E_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Pten_full.vcf | paste ~/db/DGRP/simulgenes/Ptentmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Pten_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/RagA-B_full.vcf | paste ~/db/DGRP/simulgenes/RagA-Btmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/RagA-B_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/RagC-D_full.vcf | paste ~/db/DGRP/simulgenes/RagC-Dtmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/RagC-D_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/raptor_full.vcf | paste ~/db/DGRP/simulgenes/raptortmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/raptor_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Rheb_full.vcf | paste ~/db/DGRP/simulgenes/Rhebtmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Rheb_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/rictor_full.vcf | paste ~/db/DGRP/simulgenes/rictortmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/rictor_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/RpS6_full.vcf | paste ~/db/DGRP/simulgenes/RpS6tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/RpS6_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/S6k_full.vcf | paste ~/db/DGRP/simulgenes/S6ktmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/S6k_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/sgg_full.vcf | paste ~/db/DGRP/simulgenes/sggtmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/sgg_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/sima_full.vcf | paste ~/db/DGRP/simulgenes/simatmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/sima_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Sin1_full.vcf | paste ~/db/DGRP/simulgenes/Sin1tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Sin1_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/SNF1A_full.vcf | paste ~/db/DGRP/simulgenes/SNF1Atmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/SNF1A_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/SNF4Agamma_full.vcf | paste ~/db/DGRP/simulgenes/SNF4Agammatmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/SNF4Agamma_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/step_full.vcf | paste ~/db/DGRP/simulgenes/steptmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/step_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Thor_full.vcf | paste ~/db/DGRP/simulgenes/Thortmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Thor_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Tor_full.vcf | paste ~/db/DGRP/simulgenes/Tortmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Tor_sim.bed
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/Tsc1_full.vcf | paste ~/db/DGRP/simulgenes/Tsc1tmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/Tsc1_sim.bed
+
+rm ~/db/DGRP/simulgenes/*tmp.bed
