@@ -3,8 +3,8 @@
 #In format chr, _, type, pos1,pos2, _,_,_,Dmel=FBgn####:FBtr#######etc
 mkdir -p ~/db/DGRP/simulgenes
 mkdir -p ~/db/DGRP/hqsimgenes
-REMAP=~/db/DGRP/remap #FOR BUILDING on sim1 release
-HQREMAP=~/db/DGRP/hqremap #FOR BUILDING on HQ data
+REMAP=~/code/remap #FOR BUILDING on sim1 release
+HQREMAP=~/code/hqremap #FOR BUILDING on HQ data
 echo "#!/bin/bash" > $REMAP
 echo "#!/bin/bash" > $HQREMAP
 echo "echo 'Creating bed files' " >> $REMAP
@@ -24,16 +24,25 @@ awk '{name=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1);out=sprintf("~/db/DGRP/
 awk '{full=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); sim=sprintf("~/db/DGRP/simulgenes/%stmp.bed",$1); out=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1); print "awk \x27{print $4,$5}\x27",full,"| paste",sim,"- | awk \x27{print $1,$2,$3,$5,$6}\x27 >",out}' ~/project/dmel_targets >> $REMAP
 
 #Compare and find the parts of the string in the simulans v1 assembly needed:
-awk '{out=sprintf("~/db/DGRP/simulgenes/%s_fin",$1);reader=sprintf("getline read < ~/db/SimV1/chr%ssim",$2);fin=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1); print "awk \x27 BEGIN{",reader,";}{a=substr(read,$2,$3-$2); gsub(\"chr\",\"\"); print $0,a}\x27",fin,">",out}' ~/project/dmel_targets >> $REMAP
+awk '{out=sprintf("~/db/DGRP/simulgenes/%s_fin",$1);reader=sprintf("~/db/SimV1/chr%ssim",$2);fin=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1); print "awk \x27 NR==1{read=$0}NR > 1{a=substr(read,$2,$3-$2); gsub(\"chr\",\"\"); print $0,a}\x27",reader,fin,">",out}' ~/project/dmel_targets >> $REMAP
 
 #clear files:
-echo -e "\n#Clear files that will not be used anymore:\nrm ~/db/DGRP/simulgenes/*tmp.bed" >> $REMAP echo -e "rm ~/db/DGRP/simulgenes/*_del.bed" >> $REMAP
+echo -e "\n#Clear files that will not be used anymore:\nrm ~/db/DGRP/simulgenes/*tmp.bed" >> $REMAP 
+echo -e "rm ~/db/DGRP/simulgenes/*_del.bed" >> $REMAP
+echo -e "rm ~/db/DGRP/simulgenes/*_sim.bed" >> $REMAP
 
 chmod +x $REMAP
 
 #-------------SIMULANS GENOME V2-------------------------
-
+#NOT FINISHED YET.
 #Find FBgn that contain the gene to build the scaffold:
 awk '{a=sprintf("~/db/DGRP/hqsimgenes/%s.sfd",$1);b=sprintf("\"%s\"",$2); print "awk \x27 $1 ==",b,"&& (($4 <=",$5,"&& $5 >=",$5,") || ($4 <=",$6,"&& $5 >=",$6,") || ($4 >=",$5," && $5 <=",$6,")){gsub(\"Dmel=\",\"\");gsub(\":[a-zA-Z0-9]*\",\"\");print $1,$4,$5,$9}\x27 ~/db/SimV2/dsimV2-clean.gff >",a}' ~/project/dmel_targets >> $HQREMAP
 
+mkdir -p ~/db/DGRP/tmpbatch
+#A script that prints a script that prints a script. Again....:
+#awk '{print "$4 <=",$3,"&& $5 >=",$3,"{gsub(\"Dmel=\",\"\");gsub(\":[a-zA-Z0-9]*\",\"\"); print $1,$4,$5,$9,",$3,"}\x27 ~/db/SimV2/dsimV2-clean.gff > ~/db/DGRP/hqsimgenes/%s.fb"}' ~/db/DGRP/indexedgenes/%s_recode.vcf > ~/db/DGRP/tmpbatch/%s.batch
+
+#awk '{chr=sprintf("\"%s\"",$2);print "awk \x27$1 ==",chr,"&& ($4 <=",$3,"&& $5 >=",$3,"){gsub(\"Dmel=\",\"\");gsub(\":[a-zA-Z0-9]*\",\"\"); print $1,$4,$5,$9,",$3,"}\x27 ~/db/SimV2/dsimV2-clean.gff >> ~/db/DGRP/hqsimgenes/Akt1.fb"}' ~/db/DGRP/indexedgenes/Akt1_recode.vcf > ~/db/DGRP/tmpbatch/Akt1.batch
+
+echo -e "chmod +x *.batch ">> $HQREMAP
 chmod +x $HQREMAP

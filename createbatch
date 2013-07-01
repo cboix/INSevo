@@ -1,35 +1,49 @@
 #!/bin/bash
+#Create batch files. This file should be in ~/code/createbatch:
+mkdir -p ~/db/DGRP
+#CHECK that we have the DGRP data files: 
+
+if [[ ! -e ~/db/DGRP/fidx.vcf || ! -e ~/db/DGRP/f.vcf ]] ; then {
+     if [ ! -e ~/db/DGRP/f.vcf ] ; then {
+		echo "Download freeze2.vcf from DGRP:"
+		wget http://www.hgsc.bcm.tmc.edu/projects/dgrp/freeze2_Feb_2013/vcf_files/freeze2.vcf.gz
+		gunzip ./freeze2.vcf.gz
+		mv ./freeze2.vcf ~/db/DGRP/f.vcf }
+awk '$1 !~ /#/ {print NR,$1, $2,$8}' ~/db/DGRP/f.vcf > ~/db/DGRP/fidx.vcf }
+else {echo "No need to download files"}
+fi
+
 #--------First Batch set: Creation of idx gene files----------------------
-echo "#!/bin/bash" > batchbychr
+BATCH=~/db/DGRP/batchbychr
+echo "#!/bin/bash" > $BATCH
 mkdir -p ~/db/DGRP/indexedgenes
 #An awk program that writes an awk program:
 #This uses the INDEXED (and reduced) version of the vcf!
-echo "#Awk program to pick out SNPs of interest (from the dmel_targets genes):" >> batchbychr
-awk '{a=sprintf("~/db/DGRP/indexedgenes/%s_recode.vcf",$1);b=sprintf("\"%s\"",$2); print "awk \x27 $2 ==",b,"&& $3 >=",$5,"&& $3 <=",$6,"\x27 fidx.vcf >",a}' ~/project/dmel_targets >> batchbychr
+echo "#Awk program to pick out SNPs of interest (from the dmel_targets genes):" >> $BATCH
+awk '{a=sprintf("~/db/DGRP/indexedgenes/%s_recode.vcf",$1);b=sprintf("\"%s\"",$2); print "awk \x27 $2 ==",b,"&& $3 >=",$5,"&& $3 <=",$6,"\x27 ~/db/DGRP/fidx.vcf >",a}' ~/project/dmel_targets >> $BATCH
 
 #Enable execution and (execute if it has not been done yet?)
-chmod +x batchbychr
-#qsub -clear -cwd -N batch_chr -b y ./batchbychr
+chmod +x $BATCH
+#qsub -clear -cwd -N batch_chr -b y ./$BATCH
 
 #-----------Second Batch set: Population of index files--------------------
 #Creates a set of awk scripts that will populate the index files of genes with the right population data. 
 
-#CHECK: Here you must have run the batchbychr command first!
+#CHECK: Here you must have run the $BATCH command first!
 emptyig=$(ls -sh indexedgenes | head -n 1 | awk '{print $2}')
 if [[ $emptyig != "0" ]]
 then
 	{
-echo "#!/bin/bash" > crpop2;
-echo "#!/bin/bash" > populate;
+CR2=~/code/crpop
+POP=~/code/populate
+echo "#!/bin/bash" > $CR2;
+echo "#!/bin/bash" > $POP;
 mkdir -p ~/db/DGRP/fullgenes;
-awk '{a=sprintf("~/db/DGRP/indexedgenes/%s_recode.vcf",$1); b=sprintf("\"~/db/DGRP/fullgenes/%s_full.vcf\"",$1); print "awk \x27 NR==1{c=$1}END{d=$1;e=sprintf(\"\\x27%s,%sp;\\x27\",c,d); print \"sed -n\",e,\" f.vcf | awk \\x27{gsub(/[A-Z]*:[0-9:A-Z]*:[A-Z]*/,\\\"\\\\t\\\",$0); gsub(/[0-9]*\\\\//,\\\"\\\",$0); print}\\x27 >\",",b,"}\x27",a," >> populate"}' ~/project/dmel_targets > crpop2;
+awk '{a=sprintf("~/db/DGRP/indexedgenes/%s_recode.vcf",$1); b=sprintf("\"~/db/DGRP/fullgenes/%s_full.vcf\"",$1); print "awk \x27 NR==1{c=$1}END{d=$1;e=sprintf(\"\\x27%s,%sp;\\x27\",c,d); print \"sed -n\",e,\" ~/db/DGRP/f.vcf | awk \\x27{gsub(/[A-Z]*:[0-9:A-Z]*:[A-Z]*/,\\\"\\\\t\\\",$0); gsub(/[0-9]*\\\\//,\\\"\\\",$0); print}\\x27 >\",",b,"}\x27",a," >> ~/code/populate"}' ~/project/dmel_targets > $CR2;
 
-#Executability and create populate from crpop2:
-chmod +x crpop2;
-./crpop2;
-chmod +x populate;
+#Executability and create populate from $CR2:
+chmod +x $CR2;
+$CR2;
+chmod +x $POP;
 }
 fi
-
-#awk '{gsub(/[A-Z]*:[0-9:A-Z]*:[A-Z]*/,"\t",$0);gsub(/[0-9]*\//,"",$0); print}'
-#awk '{b=$9;a=$10; for(i=11; i<=NF; i=i+2){b=sprintf("%s %s ",b,$i);};for(i = 12; i <= NF; i=i+2){a=a+$i} print $1,$2,$3,$4,$5,$6,$7,$8,b,2*a/(NF-10);}'
