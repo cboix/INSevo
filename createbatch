@@ -11,8 +11,7 @@ mkdir -p ~/db/DGRP
 #		mv ./freeze2.vcf ~/db/DGRP/f.vcf }  fi
 #awk '$1 !~ /#/ {print NR,$1, $2,$8}' ~/db/DGRP/f.vcf > ~/db/DGRP/fidx.vcf
 #}
-#fi
-
+#fi 
 #--------First Batch set: Creation of idx gene files----------------------
 TAR=~/project/dmel_targets
 BATCH=~/db/DGRP/batchbychr
@@ -47,16 +46,18 @@ chmod +x $CR2;
 $CR2;
 
 echo -e "\n#Setting all nonreads to 0, and NO threshold, for Tajima's D:" >> $POP
+#Take only SY and NS snps.
+awk '{ina=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); out=sprintf("~/db/DGRP/fullgenes/%s_tmpSNP",$1); print "awk \x27 $0 ~/SY/{print \"0\",$0} $0 ~/NS/{print \"1\",$0}\x27 ",ina,"| tr . 0 >",out}' $TAR >> $POP
+#CHECK FOR snps at the SAME position:
+awk '{ina=sprintf("~/db/DGRP/fullgenes/%s_tmpSNP",$1); out=sprintf("~/db/DGRP/fullgenes/%s_SNP",$1);print "awk \x27 {print $3}\x27 ",ina,"| sort | uniq -c | join -1 2 -2 3 -",ina,"| awk \x27{printf(\"%s %s %s %s %s %s %s %s %s\",$3,$4,$1,$5,$6,$7,$8,$9,$10); for(i=11;i <=NF; i++){a=(i%2==0?$i:$i/$2);printf(\" %s\",a);} printf(\"\\n\",2);}\x27 >",out }' $TAR >> $POP
 
-awk '{ina=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); out=sprintf("~/db/DGRP/fullgenes/%s_SNP",$1); print "awk \x27 $0 ~/SY/{print \"0\",$0} $0 ~/NS/{print \"1\",$0}\x27 ",ina,"| tr . 0 >",out}' $TAR >> $POP
-
+#FOR DIVERGENCE TESTS, we should also count snps as less! if they are at the same position.
 echo -e "With a threshold of 20 = read quality, we pick out the reads and print allele count, avg. quality, sequences used, not used, and total for divergence tests" >> $POP
-awk '{ina=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); out=sprintf("~/db/DGRP/fullgenes/%s_divSNP",$1); print "awk \x27$0 ~/SY/ || $0 ~/NS/{qual= 0;count=0;no = 0;allele=0;for(i=9;i <=NF; i= i+2){a = i+1; if($i ~ /\\./ || $a < 20){no = no +1}; if(($i == 1 || $i == 0) && $a >= 20){count=count+1;qual = qual + $a}; if($i == 1 && $a >= 20){allele = allele + $i;}}; print allele,qual/count,count,no,no+count,$8;}\x27 ",ina,">",out}' $TAR >> $POP
+awk '{ina=sprintf("~/db/DGRP/fullgenes/%s_SNP.vcf",$1); out=sprintf("~/db/DGRP/fullgenes/%s_divSNP",$1);   print "awk \x27 {qual= 0;count=0;no = 0;allele=0; for(i=10;i <=NF; i= i+2){a = i+1; if($i ~ /\\./ || $a < 20){no = no +1}; if(($i == 1 || $i == 0) && $a >= 20){count=count+1;qual = qual + $a}; if($i > 0 && $a >= 20){allele = allele + $i;}}; print allele,qual/count,count,no,no+count,$9;}\x27 ",ina,">",out}' $TAR >> $POP
 
+# Accumulate all SNPs for each gene.
 echo "" > ~/project/divergence/DGRPdiv
 awk '{ina=sprintf("~/db/DGRP/fullgenes/%s_divSNP",$1); pri=sprintf("\"%s\",sy,ns",$1); print "awk \x27 BEGIN{sy=0;ns=0;} $0 ~ /SY/{sy=sy+1}$0 ~/NS/{ns=ns+1}END{print",pri,"}\x27",ina,">> ~/project/divergence/DGRPdiv"}' $TAR >> $POP
-
-echo "awk '{print \$1,\$2,\$3}' ~/project/divergence/allsimdiv | join - ~/project/divergence/DGRPdiv > ~/project/divergence/fulldiv" >> $POP
 
 chmod +x $POP;
 }

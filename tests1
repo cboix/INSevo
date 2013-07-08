@@ -1,5 +1,4 @@
 #!/bin/bash
-R --slave -f ~/code/MK.R
 R --slave -f ~/code/TajimaD.R --args Akt1 >> ~/project/TajimaD
 R --slave -f ~/code/TajimaD.R --args CAP >> ~/project/TajimaD
 R --slave -f ~/code/TajimaD.R --args chico >> ~/project/TajimaD
