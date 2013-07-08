@@ -1,0 +1,25 @@
+#!/bin/bash
+#<+NOTE+> maybe it is worth it to make an actual makefile?
+#HERE I need to put a file that builds the directory file system (download files, etc)
+
+#Creates the targets file:
+~/code/strictgen ~/project/targets
+
+#Selects appropriate SNPs (batchbychr) and also creates SNP data (populate)
+~/code/createbatch #NOTE make the first section (check for DGRP vcf files) work.
+	~/code/batchbychr
+	~/code/populate
+
+# For building the SIMULANS V1 divergence: (not complete for analysis yet)
+~/code/createremap
+	~/code/remap
+	
+# For building the SIMULANS V2 divergence: complete.
+~/code/createcomp
+	~/code/comparediv
+
+#Join Divergence files for analysis
+awk '{print $1,$2,$3}' ~/project/divergence/allsimdiv | join - ~/project/divergence/DGRPdiv > ~/project/divergence/fulldiv 
+~/code/createanalysis
+	~/code/tests1 # Runs Tajima, MK, SEMK (R-files)
+

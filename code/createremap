@@ -1,0 +1,34 @@
+#!/bin/bash
+#CREATES the Simulans V1 mapping (from flybase annotation)
+#In format chr, _, type, pos1,pos2, _,_,_,Dmel=FBgn####:FBtr#######etc
+mkdir -p ~/db/DGRP/simulgenes
+mkdir -p ~/db/DGRP/hqsimgenes
+REMAP=~/code/remap #FOR BUILDING on sim1 release
+TAR=~/project/dmel_targets
+echo "#!/bin/bash" > $REMAP
+echo "echo 'Creating bed files' " >> $REMAP
+awk '{name=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); out=sprintf("~/db/DGRP/fullgenes/%s.bed",$1); print "awk \x27{b =(length($4)>length($5)?length($4):length($5));a = sprintf(\"chr%s %s %s %s\",$1,$2,$2+b,NR); print a}\x27",name,">",out}' $TAR >> $REMAP
+
+echo -e "\n#Find simulans remaps for necessary genes" >> $REMAP
+echo "echo 'Using LiftOver to remap' " >> $REMAP
+awk '{name=sprintf("~/db/DGRP/fullgenes/%s.bed",$1);out=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1);del=sprintf("~/db/DGRP/simulgenes/%s_del.bed",$1); print "liftOver",name,"~/db/LiftOver/dm3ToDroSim1.over.chain",out,del}' $TAR >> $REMAP
+
+echo -e "\n#To join deletion information with the remaps:\necho 'Joining w/ Deletions'" >> $REMAP
+awk '{out=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1);del=sprintf("~/db/DGRP/simulgenes/%s_del.bed",$1); print "awk \x27{a=(NR%2==0?sprintf(\"%s %s %s %s\",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}\x27",del,">>",out}' $TAR >> $REMAP
+
+#To join remapped information with the dmel gene nucleotides for comparing against sim db:
+echo -e "\n#To join remapped info w/ dmel genes for comparison against sim db" >> $REMAP
+awk '{name=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1);out=sprintf("~/db/DGRP/simulgenes/%stmp.bed",$1); print "sort -nk 4",name,">",out}' $TAR >> $REMAP
+
+awk '{full=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); sim=sprintf("~/db/DGRP/simulgenes/%stmp.bed",$1); out=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1); print "awk \x27{print $4,$5}\x27",full,"| paste",sim,"- | awk \x27{print $1,$2,$3,$5,$6}\x27 >",out}' $TAR >> $REMAP
+
+#Compare and find the parts of the string in the simulans v1 assembly needed:
+awk '{out=sprintf("~/db/DGRP/simulgenes/%s_fin",$1);reader=sprintf("~/db/SimV1/chr%ssim",$2);fin=sprintf("~/db/DGRP/simulgenes/%s_sim.bed",$1); print "awk \x27 NR==1{read=$0}NR > 1{a=substr(read,$2,$3-$2); gsub(\"chr\",\"\"); print $0,a}\x27",reader,fin,">",out}' $TAR >> $REMAP
+
+#Clear files:
+echo -e "\n#Clear files that will not be used anymore:\nrm ~/db/DGRP/simulgenes/*tmp.bed" >> $REMAP 
+echo -e "rm ~/db/DGRP/simulgenes/*_del.bed" >> $REMAP
+echo -e "rm ~/db/DGRP/simulgenes/*_sim.bed" >> $REMAP
+
+#Set to execute:
+chmod +x $REMAP
