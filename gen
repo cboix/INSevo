@@ -1,7 +1,14 @@
 #!/bin/bash
 # a loose search: there will be more hits than necessary and some may not correspond to the same genes, beware
 # Run strictgen instead to get just the right genes (right name is necessary)
+if [ "$1" == "" ] 
+then
+    ARG=~/project/targets
+else
+    ARG=$1
+fi
+
 cat ~/db/Annotation/dmel-all-r5.51.gff | awk '$2~/FlyBase/ && $3~/gene/{gsub("ID=",";",$0); gsub("Name=","n;",$0);print}' >a
 
-awk '{print $1}' $1 | grep -f - a | awk 'BEGIN{FS=";"; OFS="\t"}{print $4,$1}' > dmel_targets
+awk '{print $1}' $ARG | grep -f - a | awk 'BEGIN{FS=";"; OFS="\t"}{print $4,$1}' > ~/project/dmel_targets
 rm a

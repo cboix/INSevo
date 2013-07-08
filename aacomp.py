@@ -1,4 +1,5 @@
 #!/usr/bin/python2.6
+#Be sure to run w/ python2.6 (v2.6.5) instead of python (which is python v2.4.3)
 bases = ["t", "c", "a", "g"]
 codons = [a+b+c for a in bases for b in bases for c in bases]
 amino_acids = "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG"

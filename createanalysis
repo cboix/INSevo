@@ -1,0 +1,8 @@
+#!/bin/bash
+AN=~/code/tests1
+TAR=~/project/dmel_targets
+echo "#!/bin/bash" > $AN
+echo "#Tajima's D tests results:" > ~/project/TajimaD
+awk '{print "R --slave -f ~/code/TajimaD.R --args",$1,">> ~/project/TajimaD"}' $TAR >> $AN
+
+chmod +x $AN

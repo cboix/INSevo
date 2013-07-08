@@ -1,0 +1,36 @@
+#!/bin/bash
+R --slave -f ~/code/MK.R
+R --slave -f ~/code/TajimaD.R --args Akt1 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args CAP >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args chico >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args dm >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args eIF-4E >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Flo-2 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args foxo >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args gig >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Ilp1 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Ilp2 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Ilp3 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Ilp4 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Ilp5 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Ilp6 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Ilp7 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args InR >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args lkb1 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Pi3K21B >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Pi3K92E >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Pten >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args raptor >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Rheb >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args rictor >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args RpS6 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args S6k >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args sgg >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args sima >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Sin1 >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args SNF1A >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args SNF4Agamma >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args step >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Thor >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Tor >> ~/project/TajimaD
+R --slave -f ~/code/TajimaD.R --args Tsc1 >> ~/project/TajimaD

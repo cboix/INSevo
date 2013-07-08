@@ -29,13 +29,23 @@ $COMP
 
 #Creation of python script to tell if NS or SY:
 rm ~/project/divergence/*.out
+rm ~/project/divergence/allsimdiv
+DIV=~/code/divergencecompile
 echo "#!/usr/bin/python2.6" > $AACOMP
-echo "#Be sure to run w/ python2.6 (v2.6.5) instead of python (which is python v2.4.3)"
+echo "#Be sure to run w/ python2.6 (v2.6.5) instead of python (which is python v2.4.3)" >> $AACOMP
 awk 'BEGIN{printf("bases = [\"t\", \"c\", \"a\", \"g\"]\ncodons = [a+b+c for a in bases for b in bases for c in bases]\namino_acids = \"FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG\"\ncodon_table = dict(zip(codons,amino_acids))\n\ndef compacids(a,b):\n\ta = a.lower()\n\tb = b.lower()\n\tif (\"-\" in b):\n\t\treturn \"DEL\"\n\telse:\n\t\tif codon_table[a] == codon_table[b]:\n\t\t\treturn \"SY\"\n\t\telif codon_table[b.lower()] == \"*\":\n\t\t\treturn \"NONSENSE\"\n\t\telse:\n\t\t\treturn \"NS\"\n",2)}{simdiv=sprintf("/net/home/carlesba/project/divergence/%s.simdiv",$1);     out = sprintf("/net/home/carlesba/project/divergence/%s.out",$1);    printf("with open(\"%s\",\"r\") as f:\n\twith open(\"%s\",\"a\") as out:\n\t\tfor line in f:\n\t\t\ta = line.split(\" \")\n\t\t\ta[-1] = a[-1][0]\n\t\t\tcode = \" \".join(a) + \" \" + compacids(a[0],a[1]) + \"\\n\"\n\t\t\tout.write(code)\n",simdiv,out)}' ~/project/dmel_targets >> $AACOMP
 
 chmod +x $AACOMP
 $AACOMP
 
+echo "#!/bin/bash" > $DIV
+awk '{ina = sprintf("~/project/divergence/%s.out",$1);pri=sprintf("\"%s\",sy,ns,ns+sy",$1); print "awk \x27 $5 ~ /SY/{sy=(sy?sy+1:1);}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print",pri,"}\x27",ina,">> ~/project/divergence/allsimdiv"}' ~/project/dmel_targets >> $DIV
+
+chmod +x $DIV
+$DIV
+
 #rm ~/project/divergence/*CDsplice
 #rm ~/project/divergence/*_comp
 #rm ~/project/divergence/*.batch
+rm ~/project/divergence/*.simdiv
+rm ~/project/divergence/*.spliced
