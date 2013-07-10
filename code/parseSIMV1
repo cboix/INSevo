@@ -1,0 +1,31 @@
+#!/bin/bash
+# Variables:
+PREFIX=/net/home/carlesba
+TARGETS=$PREFIX/project/dmel_targets
+
+# Folders:
+
+while read -r p
+do
+    eval $( echo $p | awk '{printf("GENE=%s; CHR=%s; st=%s, end=%s;",$1,$2,$4,%5)}' )
+    full=$PREFIX/db/DGRP/fullgenes/$GENE\_full.vcf
+    bed=$PREFIX/db/DGRP/fullgenes/$GENE\.bed
+    
+    #CHECK input variables into this. 
+awk -v st=$st -v end=$end -v chr=$CHR'{b =(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' $full > $bed
+
+liftOver $bed $PREFIX/db/LiftOver/dm3ToDroSim1.over.chain $PREFIX/db/DGRP/simulgenes/4EHP_sim.bed ~/db/DGRP/simulgenes/4EHP_del.bed
+
+awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' ~/db/DGRP/simulgenes/4EHP_del.bed >> ~/db/DGRP/simulgenes/4EHP_sim.bed
+
+sort -nk 4 ~/db/DGRP/simulgenes/4EHP_sim.bed > ~/db/DGRP/simulgenes/4EHPtmp.bed
+
+awk '{print $4,$5}' ~/db/DGRP/fullgenes/4EHP_full.vcf | paste ~/db/DGRP/simulgenes/4EHPtmp.bed - | awk '{print $1,$2,$3,$5,$6}' > ~/db/DGRP/simulgenes/4EHP_sim.bed
+
+awk ' NR==1{read=$0}NR > 1{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' ~/db/SimV1/chr3Rsim ~/db/DGRP/simulgenes/4EHP_sim.bed > ~/db/DGRP/simulgenes/4EHP_fin
+
+done < $TARGETS
+
+rm ~/db/DGRP/simulgenes/*tmp.bed
+rm ~/db/DGRP/simulgenes/*_del.bed
+rm ~/db/DGRP/simulgenes/*_sim.bed

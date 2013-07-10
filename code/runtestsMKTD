@@ -1,0 +1,24 @@
+#!/bin/bash
+PREFIX=/net/home/carlesba
+TAR=$PREFIX/project/dmel_targets
+code=$PREFIX/code/TajimaD.R
+out=$PREFIX/project/TajimaD
+
+DGRPDIV=$PREFIX/project/divergence/DGRPdiv 
+SIMDIV=$PREFIX/project/divergence/allsimdiv
+FULLDIV=$PREFIX/project/divergence/fulldiv 
+awk '{print $1,$2,$3}' $SIMDIV | join - $DGRPDIV > $FULLDIV 
+
+# New file:
+echo "" > ~/project/TajimaD
+
+# Output Tajima's D results
+while read -r p
+do
+    eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
+    R --slave -f $code --args $GENE >> $out
+done < $TAR
+
+# McDonald -Kreitman test with Fishers and with Alpha value:
+R --slave -f MK.R
+R --slave -f SEMK.R

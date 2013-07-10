@@ -13,18 +13,24 @@ mkdir -p ~/db/DGRP
 #}
 #fi 
 #--------First Batch set: Creation of idx gene files----------------------
+
+
 TAR=~/project/dmel_targets
-BATCH=~/db/DGRP/batchbychr
+BATCH=~/code/batchbychr
 echo "#!/bin/bash" > $BATCH
 mkdir -p ~/db/DGRP/indexedgenes
+
 #An awk program that writes an awk program:
 #This uses the INDEXED (and reduced) version of the vcf!
 echo "#Awk program to pick out SNPs of interest (from the dmel_targets genes):" >> $BATCH
 awk '{a=sprintf("~/db/DGRP/indexedgenes/%s_recode.vcf",$1);b=sprintf("\"%s\"",$2); print "awk \x27 $2 ==",b,"&& $3 >=",$5,"&& $3 <=",$6,"\x27 ~/db/DGRP/fidx.vcf >",a}' $TAR >> $BATCH
 
 #Enable execution and (execute if it has not been done yet?)
+#qsub -clear -cwd -N batch_chr -b y $BATCH
+
 chmod +x $BATCH
-#qsub -clear -cwd -N batch_chr -b y ./$BATCH
+
+$BATCH
 
 #-----------Second Batch set: Population of index files--------------------
 #Creates a set of awk scripts that will populate the index files of genes with the right population data. 
@@ -48,6 +54,7 @@ $CR2;
 echo -e "\n#Setting all nonreads to 0, and NO threshold, for Tajima's D:" >> $POP
 #Take only SY and NS snps.
 awk '{ina=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); out=sprintf("~/db/DGRP/fullgenes/%s_tmpSNP",$1); print "awk \x27 $0 ~/SY/{print \"0\",$0} $0 ~/NS/{print \"1\",$0}\x27 ",ina,"| tr . 0 >",out}' $TAR >> $POP
+
 #CHECK FOR snps at the SAME position:
 awk '{ina=sprintf("~/db/DGRP/fullgenes/%s_tmpSNP",$1); out=sprintf("~/db/DGRP/fullgenes/%s_SNP",$1);print "awk \x27 {print $3}\x27 ",ina,"| sort | uniq -c | join -1 2 -2 3 -",ina,"| awk \x27{printf(\"%s %s %s %s %s %s %s %s %s\",$3,$4,$1,$5,$6,$7,$8,$9,$10); for(i=11;i <=NF; i++){a=(i%2==0?$i:$i/$2);printf(\" %s\",a);} printf(\"\\n\",2);}\x27 >",out }' $TAR >> $POP
 

@@ -11,5 +11,5 @@ fi
 cat ~/db/Annotation/dmel-all-r5.51.gff | awk '$2~/FlyBase/ && $3~/gene/{gsub("ID=",";",$0); gsub("Name=","n;",$0);print}' | awk 'BEGIN{FS=";"; OFS="\t"}{print $4,$1,$2}' | sort +0 -1 > a
 cat ~/db/Annotation/dmel-all-r5.33.gff | awk '$2~/FlyBase/ && $3~/gene/{gsub("ID=",";",$0); gsub("Name=","n;",$0);print}' | awk 'BEGIN{FS=";"; OFS="\t"}{print $4,$2}' | sort +0 -1 > c
 awk '{print $1}' $ARG | sort +0 -1 > b
-join b a | join - c > ~/project/dmel_targets
+join b a | join - c | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > ~/project/dmel_targets
 rm a b c

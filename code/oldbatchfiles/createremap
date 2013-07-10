@@ -3,8 +3,10 @@
 #In format chr, _, type, pos1,pos2, _,_,_,Dmel=FBgn####:FBtr#######etc
 mkdir -p ~/db/DGRP/simulgenes
 mkdir -p ~/db/DGRP/hqsimgenes
+
 REMAP=~/code/remap #FOR BUILDING on sim1 release
 TAR=~/project/dmel_targets
+
 echo "#!/bin/bash" > $REMAP
 echo "echo 'Creating bed files' " >> $REMAP
 awk '{name=sprintf("~/db/DGRP/fullgenes/%s_full.vcf",$1); out=sprintf("~/db/DGRP/fullgenes/%s.bed",$1); print "awk \x27{b =(length($4)>length($5)?length($4):length($5));a = sprintf(\"chr%s %s %s %s\",$1,$2,$2+b,NR); print a}\x27",name,">",out}' $TAR >> $REMAP

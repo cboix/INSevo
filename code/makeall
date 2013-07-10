@@ -7,7 +7,7 @@
 
 #Selects appropriate SNPs (batchbychr) and also creates SNP data (populate)
 ~/code/createbatch #NOTE make the first section (check for DGRP vcf files) work.
-	~/code/batchbychr
+    # runs batchbychr in it.
 	~/code/populate
 
 # For building the SIMULANS V1 divergence: (not complete for analysis yet)
