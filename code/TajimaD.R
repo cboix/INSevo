@@ -15,11 +15,11 @@ cat(out)
 cat("\n")
 
 } else {
-tab <- read.delim(filename,header=FALSE)
+tab <- read.delim(filename,header=FALSE,sep=" ")
 
-pairwise <- sapply(seq(11,417,2),data=tab,function(x,data){out=0;for(i in seq(x+2,419,2)){out=out+sum(abs(data[,x]-data[,i]))}; return(out)})
+pairwise <- sapply(seq(10,416,2),data=tab,function(x,data){out=0;for(i in seq(x+2,418,2)){out=out+sum(abs(data[,x]-data[,i]))}; return(out)})
 #Variables to be used:
-    n <- length(seq(11,419,2))
+    n <- length(seq(10,418,2))
     k <- sum(pairwise)/(n*(n-1))
     S <- nrow(tab)
     a1 <- sum(sapply(1:(n-1),function(x){return(1/x)}))

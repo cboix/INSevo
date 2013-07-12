@@ -1,9 +1,11 @@
 #!/bin/bash
 # make sure the target inputs are sorted!
 # PUTS TOGETHER THE FBgn# from 5.33 (to match it against the Simv2) and the data from the current update, 5.51
+PREFIX=/net/home/carlesba
+
 if [ "$1" == "" ]
 then
-    ARG=~/project/targets
+    ARG=$PREFIX/project/targets
 else
     ARG=$1
 fi
@@ -11,5 +13,11 @@ fi
 cat ~/db/Annotation/dmel-all-r5.51.gff | awk '$2~/FlyBase/ && $3~/gene/{gsub("ID=",";",$0); gsub("Name=","n;",$0);print}' | awk 'BEGIN{FS=";"; OFS="\t"}{print $4,$1,$2}' | sort +0 -1 > a
 cat ~/db/Annotation/dmel-all-r5.33.gff | awk '$2~/FlyBase/ && $3~/gene/{gsub("ID=",";",$0); gsub("Name=","n;",$0);print}' | awk 'BEGIN{FS=";"; OFS="\t"}{print $4,$2}' | sort +0 -1 > c
 awk '{print $1}' $ARG | sort +0 -1 > b
-join b a | join - c | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > ~/project/dmel_targets
+join b a | join - c | awk '{name=$1; gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print $0,($5-$4+1),name}' > $PREFIX/project/dmel_targets
+
+# Split for fast processing!
+mkdir -p $PREFIX/project/genes/
+awk -v prefix=$PREFIX '{len=((NR - NR % 100)/100 + 1); print > prefix "/project/genes/" int($2) "dmel_targets"}' $PREFIX/project/dmel_targets
+
+
 rm a b c

@@ -1,10 +1,19 @@
 #!/bin/bash
 # Variables:
 PREFIX=/net/home/carlesba
-TARGETS=$PREFIX/project/dmel_targets
 div=$PREFIX/project/divergence/DGRPdiv
 fidx=$PREFIX/db/DGRP/fidx.vcf
 fvcf=$PREFIX/db/DGRP/f.vcf
+
+#For running parallel jobs:
+if [ "$1" == "" ]
+then
+    TARGETS=$PREFIX/project/dmel_targets
+else
+    TARGETS=$1
+fi
+
+
 
 # Folders:
 mkdir -p $PREFIX/db/DGRP
