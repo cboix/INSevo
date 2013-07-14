@@ -1,0 +1,20 @@
+#!/bin/bash
+PREFIX=/home/net/carlesba
+TARGETS=~/Labwork/project/targets
+#ANNOTATION=$PREFIX/db/Annotation/GO
+ANNOTATION=~/Labwork/Annotation
+FB=$ANNOTATION/gene_association.fb
+GENETAR=$ANNOTATION/geneall
+BYGENE=$ANNOTATION/gene_ann
+BYGO=$ANNOTATION/GO_ann
+
+#TARGETS SHOULD BE SORTED BY sort +0 - 1 as well.
+awk '$0 !~ /^!/{a=($4~/GO:/?$4:$5); print $3,a}' $FB | sort -u | sort +0 -1 | join - $TARGETS > $GENETAR
+
+#BY gene:
+awk 'BEGIN{a="NOTHING"}{if($1 !~ a){printf("\n%s",$1);a=$1}; printf(" %s",$2)}' $GENETAR | awk 'NR > 1' > $BYGENE
+
+#BY ontology term:
+awk '{print $2,$1}' $GENETAR | sort -n | awk 'BEGIN{a="NOTHING"}{if($1 !~ a){printf("\n%s",$1);a=$1}; printf(" %s",$2)}' | awk 'NR > 1' > $BYGO 
+
+

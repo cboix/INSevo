@@ -1,0 +1,19 @@
+#!/bin/bash
+#Take a series of GO #s from arguments (right now as a file):
+ANNOTATION=~/Labwork/Annotation
+TERMS=$ANNOTATION/compGOterms
+BYGO=$ANNOTATION/GO_ann
+GENES=$ANNOTATION/termgenes
+
+#Find the lists that match these arguments
+#Then use the names in form GO# name name name name name to form several datasets:
+sort +0 -1 $TERMS | join - $BYGO | awk '{gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print $0}' | awk '{for(i =2; i <=NF; i++){printf("%s %s\n",$i,$1)}}' > $GENES
+#OTHERWISE USE this reduced version w. at least 3 per group:
+awk 'NF > 2' $BYGO | awk '{gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print $0}' | awk '{for(i =2; i <=NF; i++){printf("%s %s\n",$i,$1)}}' > $ANNOTATION/redgeneall
+
+#Even more reduced:
+awk 'NF > 9' $BYGO | awk '{gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print $0}' | awk '{for(i =2; i <=NF; i++){printf("%s %s\n",$i,$1)}}' > $ANNOTATION/red10geneall
+#RUN R command
+
+
+#Process to find which groups are the FARTHEST apart!

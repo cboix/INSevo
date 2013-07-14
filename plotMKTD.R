@@ -58,7 +58,8 @@ g2 + geom_point() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + l
 
 
 #---------------------BOTH TOGETHER:---------------------------------------------------
-merge(d,dTD,by="Gene") -> aDTF
+merge(dtf,dTD,by="Gene") -> aDTF
+write.table(aDTF,'TDMKtab')
 idx <- (aDTF$pvalsout != 1)*(aDTF$TajimaD < -2.132)*1:nrow(aDTF)
 labDTF <- aDTF[idx,]
 idx2 <- (aDTF$pvalsout !=1)
