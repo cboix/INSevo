@@ -3,11 +3,12 @@
 PREFIX=/net/home/carlesba
 TARGETS=$PREFIX/project/dmel_targets
 AMINOCOMP=$PREFIX/code/aminocomp.py
-CDSIMDIV=$PREFIX/project/divergence/cd.sim.div
-NCSIMDIV=$PREFIX/project/divergence/nc.sim.div
+DIVDIR=$PREFIX/project/divergence
+CDSIMDIV=$DIVDIR/cd.sim.div
+NCSIMDIV=$DIVDIR/nc.sim.div
 
 # Folders:
-mkdir -p $PREFIX/project/divergence
+mkdir -p $DIVDIR
 
 # Grab comparative alignments of Dmel against Dsim and Dyak (Sim V2 assembly)
 while read -r p
@@ -16,11 +17,11 @@ do
 
     #Names for each gene:
     fasta=$PREFIX/db/SimV2/alnMSY/$CHR/$FBGN\.fa.anc
-    spliced=$PREFIX/project/divergence/$GENE\.spliced
-    coding=$PREFIX/project/divergence/$GENE\.cd.sim
-    noncoding=$PREFIX/project/divergence/$GENE\.nc.sim
-    cddiv=$PREFIX/project/divergence/$GENE\.cd.simdiv
-    ncdiv=$PREFIX/project/divergence/$GENE\.nc.simdiv
+    spliced=$DIVDIR/$GENE\.spliced
+    coding=$DIVDIR/$GENE\.cd.sim
+    noncoding=$DIVDIR/$GENE\.nc.sim
+    cddiv=$DIVDIR/$GENE\.cd.simdiv
+    ncdiv=$DIVDIR/$GENE\.nc.simdiv
 
     # Only if either of the two does NOT exist.
     if [[ ! -e $cddiv || ! -e $ncdiv ]]
@@ -47,8 +48,27 @@ echo "Compiling full divergence file"; echo "" > $CDSIMDIV; echo "" > $NCSIMDIV
 while read -r p
 do 
     eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
-    pycdout=$PREFIX/project/divergence/$GENE\.cd.out
-    pyncout=$PREFIX/project/divergence/$GENE\.nc.out
-    awk -v gene=$GENE '$5 ~ /SY/{sy=(sy?sy+1:1);}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pycdout >> $CDSIMDIV
-    awk -v gene=$GENE '$5 ~ /SY/{sy=(sy?sy+1:1);}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pyncout >> $NCSIMDIV
+    pycdout=$DIVDIR/$GENE\.cd.out
+    pyncout=$DIVDIR/$GENE\.nc.out
+    if [[ ! -e $pycdout || ! -e $pyncout ]]
+    then {
+        awk -v gene=$GENE '$5 ~ /SY/{sy=(sy?sy+1:1);}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pycdout >> $CDSIMDIV
+        awk -v gene=$GENE '$5 ~ /SY/{sy=(sy?sy+1:1);}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pyncout >> $NCSIMDIV
+    } fi
 done < $TARGETS
+
+# Assess distribution of distances between SNPs
+echo "Assessing randomness of the SNP positions"; echo "" > $PREFIX/project/GFExp
+while read -r p
+do
+    eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
+    LENGTH=$( awk 'END{print NR}' $DIVDIR/$GENE\.cd.sim )
+    awk 'BEGIN{a=0}$0 ~ /SY/{print $3-a; a=$3}' $DIVDIR/$GENE\.cd.out > $DIVDIR/$GENE\.sy.dist
+    awk 'BEGIN{a=0}$0 ~ /NS/{print $3-a; a=$3}' $DIVDIR/$GENE\.cd.out > $DIVDIR/$GENE\.ns.dist
+
+    # Run R command to process this:
+    R --slave -f $PREFIX/code/GFExp.R --args $LENGTH $PREFIX $GENE >> $PREFIX/project/GFExp
+
+done < $TARGETS
+
+
