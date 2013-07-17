@@ -14,6 +14,6 @@ awk 'NF > 2' $BYGO | awk '{gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print $0}' | aw
 #Even more reduced:
 awk 'NF > 9' $BYGO | awk '{gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print $0}' | awk '{for(i =2; i <=NF; i++){printf("%s %s\n",$i,$1)}}' > $ANNOTATION/red10geneall
 #RUN R command
-
+# R command is  compterms.R
 
 #Process to find which groups are the FARTHEST apart!

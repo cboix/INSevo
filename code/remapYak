@@ -1,0 +1,61 @@
+#!/bin/bash
+#CREATES the Yakuba remapping from flybase annotation and liftOver files.
+#In format chr, _, type, pos1,pos2, _,_,_,Dmel=FBgn####:FBtr#######etc
+PREFIX=/net/home/carlesba
+TARGETS=$PREFIX/project/dmel_targets
+YAKDIR=$PREFIX/db/DGRP/yakgenes
+FULLGENES=$PREFIX/db/DGRP/fullgenes
+CDS=$PREFIX/db/Annotation/cds-r5.33
+
+#Necessary directories
+mkdir -p $YAKDIR
+
+if [[ ! -s $CDS ]] 
+then { awk '$2 ~ /FlyBase/ && $3 ~ /CDS/{gsub(";"," ",$0); gsub("Name="," ",$0); gsub("Name=","n;",$0); gsub(":"," ",$0); print $1,$3,$4,$5,$10,$11}' $PREFIX/db/Annotation/dmel-all-r5.33.gff | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > $CDS } fi
+
+while read -r p
+do
+    eval $( echo $p | awk '{printf("GENE=%s; CHR=%s; FBGN=%s;",$1,$2,$11)}' )
+    GENE=Akt1
+    FULL=$FULLGENES/$GENE\_full.vcf
+    BED=$FULLGENES/$GENE\.bed
+    YAKbed=$YAKDIR/$GENE\_yak.bed
+    YAKdel=$YAKDIR/$GENE\_ydel.bed
+    YAKtmp=$YAKdir/$GENE\_ytmp.bed
+    YAKchr=$PREFIX/db/Yak2/$CHR\yak
+
+    if [[ ! -s $YAKbed ]] 
+    then {
+        eval $( awk -v gene=$GENE '$6 ~ gene' $CDS | sort -nk 5 | awk '{if(b != $5){printf("%s %s\n",a,b); a=0; b=$5} a=a+$3-$2+1}END{printf("%s %s\n",a,b)}' | awk 'NR != 1' | sort -n | awk 'END{printf("TR=%s",$2)}' )
+
+        awk -v gene=$GENE -v tr=$TR '$6 ~ gene && $5 == tr' $CDS | 
+
+        #Generate bed files to be used in the liftOver work: # Put together the CDS and EXPAND!
+        #awk '{for(i=$2;i < $3;i++){printf("%s %s %s\n",$1,i,i+1)}}'
+        awk '{b=(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' $FULL > $BED
+
+        #Use liftOver to remap the coordinates from melanogaster to Yakuba, note that liftOver must be in path!
+        liftOver $BED $PREFIX/db/LiftOver/dm3ToDroYak2.over.chain $YAKbed $YAKdel
+
+        #Join Deletion information with the remaps:
+        awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' $YAKdel >> $YAKbed
+
+        #Join remapped information w/ dmel gene nucleotides for comparing against yak db:
+        sort -nk 4 $YAKbed > $YAKtmp
+        # Final "bed" file. The columns are: chr, 
+        awk '{print $4,$5}' $FULL | paste $YAKtmp - | awk '{print $1,$2,$3,$5,$6}' > $YAKbed
+
+    } fi
+
+        #Read correct nucleotides:
+        awk 'NR==1{read=$0}NR > 1{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' $YAKchr $YAKbed > $YAKcomp
+
+        #Must do for Mel as well!
+
+done < $TARGETS
+
+
+#Clear files that will not be used anymore:
+rm ~/db/DGRP/simulgenes/*tmp.bed
+rm ~/db/DGRP/simulgenes/*_del.bed
+rm ~/db/DGRP/simulgenes/*_sim.bed

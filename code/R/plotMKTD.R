@@ -1,6 +1,5 @@
 #!/usr/bin/R
 
-
 # ------------------ McDonald Test ---------------------
 MK <- read.table('MKdivsim')
 SE <- read.table('SEMKdivsim')
@@ -8,7 +7,6 @@ tab <- cbind(MK,SE[,-1])
 names(tab) <- c("Gene","Gstat","Chisq","p.value","Alpha","Ds","Dn","Ps","Pn")
 tabfull <- tab
 #REMOVE OUTLIERS by 3 Standard deviations out of NORMAL assumptions! (set the other variable fixed, otherwise we will have a RATIO distribution)
-
 
 sdd <- with(tabfull,sd(Ds/Ps))
 sdp <- with(tabfull,sd(Ps/Ds))
@@ -79,11 +77,13 @@ glab2 <- ggplot(aDTF,aes(Alpha,TajimaD,color=pvalsout))
 glab2 + geom_point(alpha=0.8) + labs(x="MK test - Alpha",y="Tajima's D value") +  geom_hline(yintercept=c(0,-2.132),color=c('black','red'),linetype='dashed') + geom_vline(xintercept=AvA,color='green',linetype='dashed') + geom_text(data=lab2DTF,aes(Alpha,TajimaD,label= Gene),vjust=1.5,hjust=.1,size=3)
 
 
+#Significant TD AND Alpha
 dev.new()
 gsmall <- ggplot(labDTF,aes(Alpha,TajimaD,color=pvalsout))
 gsmall + geom_point(alpha=0.8) + labs(x="MK test - Alpha",y="Tajima's D value") +  geom_hline(yintercept=c(-2.132),color=c('red'),linetype='dashed') + geom_vline(xintercept=AvA,color='green',linetype='dashed') + geom_text(data=labDTF,aes(Alpha,TajimaD,label= Gene),vjust=1.5,hjust=.1,size=3)
 
 
+#SIDE OF PLOT (high alpha, nonsignificant TD)
 dev.new()
 gside2 <- ggplot(lab4DTF,aes(Alpha,TajimaD,color=pvalsout))
 gside2+ geom_point(alpha=0.8) + labs(x="MK test - Alpha",y="Tajima's D value") +  geom_hline(yintercept=c(0,-2.132),color=c('black','red'),linetype='dashed') + geom_vline(xintercept=AvA,color='green',linetype='dashed') + geom_text(data=lab4DTF,aes(Alpha,TajimaD,label= Gene),vjust=1.5,hjust=.1,size=3)

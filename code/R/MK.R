@@ -12,6 +12,7 @@ MK <- function(x,data){
 
 # Read and Remove bad data points:
 read.delim('~/project/divergence/fulldiv',header=FALSE,sep=" ") -> tab
+
 for(i in 2:5){tab <- tab[!tab[,i] == 0,]}
 
 #Run MK function and write file

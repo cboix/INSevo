@@ -17,4 +17,8 @@ awk 'BEGIN{a="NOTHING"}{if($1 !~ a){printf("\n%s",$1);a=$1}; printf(" %s",$2)}' 
 #BY ontology term:
 awk '{print $2,$1}' $GENETAR | sort -n | awk 'BEGIN{a="NOTHING"}{if($1 !~ a){printf("\n%s",$1);a=$1}; printf(" %s",$2)}' | awk 'NR > 1' > $BYGO 
 
+# Make sure the ontologies are shortened:
+awk 'BEGIN{ORS=" "}{gsub("\n"," ",$0);gsub("\\\[Term\\\]","\n",$0); print $0}' $ANNOTATION/gene_ontology.obo | awk '{gsub(" ","_",$0);gsub("namespace:_"," ",$0);gsub("name:_"," "); gsub("id:_"," ");print $2,$3,$4}' | awk 'BEGIN{OFS="\t"}$1 ~ /GO/{gsub("_ "," ");gsub("_def:"," ");gsub("_alt_id","");gsub("_alt_","");print $1,$2,$3}' > $ANNOTATION/short.obo
+
+
 

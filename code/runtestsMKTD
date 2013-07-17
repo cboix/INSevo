@@ -7,7 +7,7 @@ out=$PREFIX/project/TajimaD
 DGRPDIV=$PREFIX/project/divergence/DGRPdiv 
 SIMDIV=$PREFIX/project/divergence/allsimdiv
 FULLDIV=$PREFIX/project/divergence/fulldiv 
-awk '{print $1,$2,$3}' $SIMDIV | join - $DGRPDIV > $FULLDIV 
+awk '{print $1,$2,$3}' $SIMDIV | sort +0 -1 | join - $DGRPDIV > $FULLDIV 
 
 # New file:
 echo "" > $out

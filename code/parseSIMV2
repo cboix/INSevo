@@ -28,15 +28,16 @@ do
     then {
         echo "Creating assembly of gene $GENE"
 	    # Takes the FBtr that has the largest exon splice and puts it next to the d. mel, sim, yak sequences:
-	    awk 'BEGIN{RS=">[A-Z]";split("",a)} 1 < NR{gsub("\n","");gsub(/([a-zFBtr0-9 <_]*>)/,""); a[NR] = $0}END{for(i=1;i < NR;i++){printf("%s\n",a[i])}}'  $fasta | perl -F, -ane ' $,=" "; print split("",$F[0])' | awk 'BEGIN{split("",a);}{count = 0;for(i = 1; i <=NF; i++){a[i]=sprintf("%s%s ",a[i],$i)}}END{for(i = 1; i <=NF;i++){print a[i]}}' | awk 'BEGIN{split("",c);split("",a)}{for(i=4; i <= NF; i++){if($i !~ /-/){c[i] = c[i] + 1; if(length(s[i]) == 3 && s[i] !~ /ATG/){c[i] = 0}else{s[i] = sprintf("%s%s",s[i],$i)}}};a[NR] = $0}END{for(i=4; i <=NF; i++){d=(d?(c[d]>c[i]?d:i):i)}; printf("%s\n",d); for(i=1;i <=NR;i++){print a[i]}}' | awk 'NR == 1{a = $0}NR!=1{print $1,$2,$3,$a}' > $spliced
+	    awk 'BEGIN{RS=">[A-Z]";split("",a)} 1 < NR{gsub("\n","");gsub(/([a-zFBtr0-9 <_]*>)/,""); a[NR] = $0}END{for(i=1;i < NR;i++){printf("%s\n",a[i])}}'  $fasta | perl -F, -ane ' $,=" "; print split("",$F[0])' | awk 'BEGIN{split("",a);}{count = 0;for(i = 1; i <=NF; i++){a[i]=sprintf("%s%s ",a[i],$i)}}END{for(i = 1; i <=NF;i++){print a[i]}}' | awk 'BEGIN{split("",c);split("",a)}{for(i=4; i <= NF; i++){if($i !~ /-/){c[i] = c[i] + 1; if(length(s[i]) == 3 && s[i] !~ /ATG/){c[i] = 0}else{s[i] = sprintf("%s%s",s[i],$i)}}};a[NR] = $0}END{for(i=4; i <=NF; i++){d=(d?(c[d]>c[i]?d:i):i)}; printf("%s\n",d); for(i=1;i <=NR;i++){print a[i]}}' | awk 'NR == 1{a = $0}NR!=1{print $1,$2,$3,$a,NR-1}' > $spliced
 	
 	    # Separate into coding and non coding regions:
 	    awk '($4 !~ /-/) && ($4 !~ /X/)' $spliced > $coding
 	    awk '($4 ~ /-/) && ($4 !~ /X/)' $spliced > $noncoding
 	
+        #KEEP INDEX from full region:
 	    # Separate codons and take DMEL and DSIM region divergences (coding and noncoding):
-	    awk 'NR % 3 == 1{split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c)}}' $coding > $cddiv
-	    awk 'NR % 3 == 1{split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c)}}' $noncoding > $ncdiv
+	    awk 'NR % 3 == 1{aaposition=$5;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c,aaposition)}}' $coding > $cddiv
+	    awk 'NR % 3 == 1{aaposition=$5;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c,aaposition)}}' $noncoding > $ncdiv
     } fi
 done < $TARGETS
 
@@ -50,10 +51,16 @@ do
     eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
     pycdout=$DIVDIR/$GENE\.cd.out
     pyncout=$DIVDIR/$GENE\.nc.out
-    if [[ ! -e $pycdout || ! -e $pyncout ]]
+    # RUN IF EXISTS! not other way around! (Bug that was killing the pipeline before)
+    if [[ -e $pycdout && -e $pyncout ]]
     then {
-        awk -v gene=$GENE '$5 ~ /SY/{sy=(sy?sy+1:1);}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pycdout >> $CDSIMDIV
-        awk -v gene=$GENE '$5 ~ /SY/{sy=(sy?sy+1:1);}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pyncout >> $NCSIMDIV
+        NONSENSE=$( grep NONSENSE $pycdout | awk 'END{print NR}' )
+        if [[ "$NONSENSE" == "0" ]] 
+        then {
+        #TODO Step here to edit whether div is in same location:
+            awk -v gene=$GENE '$6 ~ /SY/{sy=(sy?sy+1:1);}$6 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pycdout >> $CDSIMDIV
+            awk -v gene=$GENE '$6 ~ /SY/{sy=(sy?sy+1:1);}$6 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pyncout >> $NCSIMDIV
+        } fi
     } fi
 done < $TARGETS
 
@@ -62,13 +69,14 @@ echo "Assessing randomness of the SNP positions"; echo "" > $PREFIX/project/GFEx
 while read -r p
 do
     eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
+
     LENGTH=$( awk 'END{print NR}' $DIVDIR/$GENE\.cd.sim )
+
     awk 'BEGIN{a=0}$0 ~ /SY/{print $3-a; a=$3}' $DIVDIR/$GENE\.cd.out > $DIVDIR/$GENE\.sy.dist
     awk 'BEGIN{a=0}$0 ~ /NS/{print $3-a; a=$3}' $DIVDIR/$GENE\.cd.out > $DIVDIR/$GENE\.ns.dist
 
     # Run R command to process this:
-    R --slave -f $PREFIX/code/GFExp.R --args $LENGTH $PREFIX $GENE >> $PREFIX/project/GFExp
+    R --slave -f $PREFIX/code/GFexp.R --args $LENGTH $PREFIX $GENE >> $PREFIX/project/GFExp
 
 done < $TARGETS
-
 

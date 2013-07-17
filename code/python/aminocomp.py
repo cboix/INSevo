@@ -1,7 +1,7 @@
 #!/usr/bin/python2.6
 PREFIX='/net/home/carlesba' #Take from arguments in bash.
 CDorNC='cd' #another argument that can be taken in bash.
-REFRESH=False #canonically false, but can be overwritten. THIS whole section should be parsed as args.
+REFRESH=True #canonically false, but can be overwritten. THIS whole section should be parsed as args.
 
 import os.path
 
@@ -30,7 +30,7 @@ def genecomp(gene,prefix,cdnc,refresh):
     nameout = prefix + '/project/divergence/' + gene + '.' + cdnc + '.out'
 
 	# If out file exists, don't do this unless refresh.
-    if (not os.path.exists(nameout) or refresh):
+    if (not os.path.exists(nameout) or REFRESH):
 		with open(namef,'r') as f:
 		    with open(nameout,'a') as out:
 		        for line in f:
