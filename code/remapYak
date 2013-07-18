@@ -11,51 +11,120 @@ CDS=$PREFIX/db/Annotation/cds-r5.33
 mkdir -p $YAKDIR
 
 if [[ ! -s $CDS ]] 
-then { awk '$2 ~ /FlyBase/ && $3 ~ /CDS/{gsub(";"," ",$0); gsub("Name="," ",$0); gsub("Name=","n;",$0); gsub(":"," ",$0); print $1,$3,$4,$5,$10,$11}' $PREFIX/db/Annotation/dmel-all-r5.33.gff | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > $CDS } fi
+then { awk '$2 ~ /FlyBase/ && $3 ~ /CDS/{gsub(";"," ",$0); gsub("Name="," ",$0); gsub("Name=","n;",$0); gsub(":"," ",$0); print $1,$3,$4,$5,$10,$11}' $PREFIX/db/Annotation/dmel-all-r5.33.gff | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > $CDS 
+} fi
 
 while read -r p
 do
     eval $( echo $p | awk '{printf("GENE=%s; CHR=%s; FBGN=%s;",$1,$2,$11)}' )
     GENE=Akt1
+    CHR=3R
     FULL=$FULLGENES/$GENE\_full.vcf
     BED=$FULLGENES/$GENE\.bed
     YAKbed=$YAKDIR/$GENE\_yak.bed
     YAKdel=$YAKDIR/$GENE\_ydel.bed
-    YAKtmp=$YAKdir/$GENE\_ytmp.bed
-    YAKchr=$PREFIX/db/Yak2/$CHR\yak
+    YAKtmp=$YAKDIR/$GENE\_ytmp.bed
+    YAKdiv=$YAKDIR/$GENE\.yak.div
+    YAKchr=$PREFIX/db/Yak2/chr$CHR\yak
+    MELchr=$PREFIX/db/Dm3/chr$CHR\mel
 
     if [[ ! -s $YAKbed ]] 
     then {
-        eval $( awk -v gene=$GENE '$6 ~ gene' $CDS | sort -nk 5 | awk '{if(b != $5){printf("%s %s\n",a,b); a=0; b=$5} a=a+$3-$2+1}END{printf("%s %s\n",a,b)}' | awk 'NR != 1' | sort -n | awk 'END{printf("TR=%s",$2)}' )
 
-        awk -v gene=$GENE -v tr=$TR '$6 ~ gene && $5 == tr' $CDS | 
+        #Get the longest transcript's number (to extract longest CDS):
+        eval $( awk -v gene=$GENE '$6 ~ gene' $CDS | sort -nk 5 | awk '{if(b != $5){printf("%s %s\n",a,b); a=0; b=$5} a=a+$4-$3+1}END{printf("%s %s\n",a,b)}' | awk 'NR != 1' | sort -n | awk 'END{printf("TR=%s",$2)}' )
 
-        #Generate bed files to be used in the liftOver work: # Put together the CDS and EXPAND!
-        #awk '{for(i=$2;i < $3;i++){printf("%s %s %s\n",$1,i,i+1)}}'
-        awk '{b=(length($4)>length($5)?length($4):length($5));a = sprintf("chr%s %s %s %s",$1,$2,$2+b,NR); print a}' $FULL > $BED
+        # Generate bed files to be used in the liftOver work: # Put together the CDS and EXPAND!
+        # For some reason, even within the transcript chosen there are duplicates, so we remove those.
+        awk -v gene=$GENE -v tr=$TR '$6 ~ gene && $5 == tr' $CDS | sort -u | awk '{for(i=$3;i < $4;i++){printf("chr%s %s %s\n",$1,i,i+1)}}' > $BED 
+       
+        #Find Dmel nucleotides:  NOTE THIS IS FROM THE 5.52 revision!
+        awk 'NR==1{read=$0}NR > 1{a=substr(read,$2,$3-$2); print $1,$2,$3,a,NR-1}' $MELchr $BED > $YAKtmp
 
-        #Use liftOver to remap the coordinates from melanogaster to Yakuba, note that liftOver must be in path!
-        liftOver $BED $PREFIX/db/LiftOver/dm3ToDroYak2.over.chain $YAKbed $YAKdel
+        #Use liftOver to remap the coordinates from melanogaster to Yakuba, note that liftOver must be in path! 
+        #This is the longest part
+        liftOver $YAKtmp $PREFIX/db/LiftOver/dm3ToDroYak2.over.chain $YAKbed $YAKdel
 
         #Join Deletion information with the remaps:
-        awk '{a=(NR%2==0?sprintf("%s %s %s %s",$1,a,a,$4):substr($0,2,3)); if(NR%2==0){print a};}' $YAKdel >> $YAKbed
+        awk '{a=(NR%2==0?sprintf("%s %s %s %s %s",$1,a,a,$4,$5):substr($0,2,3)); if(NR%2==0){print a};}' $YAKdel >> $YAKbed
 
         #Join remapped information w/ dmel gene nucleotides for comparing against yak db:
-        sort -nk 4 $YAKbed > $YAKtmp
-        # Final "bed" file. The columns are: chr, 
-        awk '{print $4,$5}' $FULL | paste $YAKtmp - | awk '{print $1,$2,$3,$5,$6}' > $YAKbed
+        sort -nk 5 $YAKbed > $YAKtmp
+        
+        # Grab Yakuba nucleotides
+        awk 'NR==1{read=$0}NR > 1{a=substr(read,$2+2,1); a=(a~/G/?"C":(a~/C/?"G":(a~/T/?"A":"T"))); print $1,$2,$3,$4,a,$5}' $YAKchr $YAKtmp > $YAKbed
+
 
     } fi
+done < $TARGETS
 
-        #Read correct nucleotides:
-        awk 'NR==1{read=$0}NR > 1{a=substr(read,$2,$3-$2); gsub("chr",""); print $0,a}' $YAKchr $YAKbed > $YAKcomp
+#---------------------------------------------------------------------------#
+while read -r p
+do
+    eval $( echo $p | awk '{printf("GENE=%s; CHR=%s; FBGN=%s; cds=%s-cds",$1,$2,$11,$1)}' )
+    GENE=Akt1
+    CHR=3R
+    cds=Akt1-cds
+    BED=$FULLGENES/$GENE\.bed
+    YAKbed=$YAKDIR/$GENE\_yak.bed
+    YAKdiv=$YAKDIR/$GENE\.yak.div
 
-        #Must do for Mel as well!
+    if [[ ! -s $YAKdiv ]] 
+    then {
+        
+        #Get the longest transcript's number (to extract longest CDS):
+        eval $( awk -v cds=$cds '$6 == cds' $CDS | sort -nk 5 | awk '{if(b != $5){printf("%s %s\n",a,b); a=0; b=$5} a=a+$4-$3+1}END{printf("%s %s\n",a,b)}' | awk 'NR != 1' | sort -n | awk 'END{printf("TR=%s",$2)}' )
 
+        # Generate bed files to be used in the liftOver work: # Put together the CDS and EXPAND it:
+        awk -v gene=$GENE -v tr=$TR '$6 ~ gene && $5 == tr' $CDS | sort -u > $BED 
+        #A warning!
+        awk -v st=$ST -v en=$EN 'END{if(st > en){print "start is above end"}}' $BED
+       
+        echo "" > $YAKbed
+        #Loop through the CDS that is EXPANDED.
+        echo "Loop through bed file:"
+        while read -r line
+        do
+            eval $( echo $line | awk '{printf("CHRNUM=chr%s; ST=%s; EN=%s",$1,$3,$4)}' )
+            AXT=$PREFIX/db/LiftOver/$CHRNUM\.dm3.droYak2.net.axt
+            # Also, make sure we only get one record per case here: (we do overlaps case by case:)
+            awk -v st=$ST -v en=$EN 'BEGIN{RS="\n\n"}
+            $1 !~ /##/ && st < en && en <= $4 && st >= $3 {p=st-$3+1; e=en-st+1; m=substr($10,p,e); y=substr($11,p,e); print m,y,"all",st,en}
+
+            $1 !~ /##/ && st < en && en >=$4 && st >= $3 && st <= $4 {p=st-$3+1; e=$4-st+1; m=substr($10,p,e); y=substr($11,p,e); print m,y,"leftside",st,$4}
+
+            $1 !~ /##/ && st < en && st <= $3 && en >=$4 {print $10,$11,"inside",$3,$4}
+
+            $1 !~ /##/ && st < en && st <=$3 && en <=$4 && en >=$3 {e=en-$3+1;m=substr($10,1,e);y=substr($11,1,e); print m,y,"rightside",$3,en}' $AXT >> $YAKbed
+
+        done < $BED
+        #Work needs to be done to integrate if not all are "all" (but they should be).
+        awk '{print $1,$2}' $YAKbed | awk 'BEGIN{split("",a)}{a[1]=sprintf("%s%s",a[1],$1); a[2]=sprintf("%s%s",a[2],$2);}END{printf("%s\n%s",a[1],a[2])}' | perl -F, -ane ' $,=" "; print split("",$F[0])' | awk 'BEGIN{split("",a);}{count = 0;for(i = 1; i <=NF; i++){a[i]=sprintf("%s%s %s ",a[i],$i,i)}}END{for(i = 1; i <=NF;i++){print a[i]}}' | awk '{print $1,$3,$4}' | awk '$1 !~ /[actg-]/' | awk 'NR % 3 == 1{aaposition=$3;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c,aaposition)}}' > $YAKdiv
+        
+  } fi
+done < $TARGETS
+
+        $PREFIX/code/yaminocomp.py
+
+        ydiv=$PREFIX/project/divergence/cd.yak.div
+#ONCE python is done:
+echo "Compiling full divergences file:"; echo "" > $ydiv
+while read -r p
+do
+    eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
+    YAKout=$YAKDIR/$GENE\.out
+    if [[ -e $YAKout ]]
+    then {
+        NONSENSE=$( grep NONSENSE $YAKout | awk 'END{print NR}' )
+        if [[ "$NONSENSE" == "0" ]] 
+        then {
+        #TODO Step here to edit whether div is in same location:
+    awk -v gene=$GENE '$6 ~ /SY/{sy=(sy?sy+1:1);}$6 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $YAKout >> $ydiv
+        } fi
+    } fi
 done < $TARGETS
 
 
+#______________________________________________________________NOTHING HERE_____________
+
 #Clear files that will not be used anymore:
-rm ~/db/DGRP/simulgenes/*tmp.bed
-rm ~/db/DGRP/simulgenes/*_del.bed
-rm ~/db/DGRP/simulgenes/*_sim.bed

@@ -63,12 +63,38 @@ path <- function(path){
     model <- c(step/2,rep.int(step,l-1),step/2)
 
     x <- c(0,cumsum(path))
+    y <- c(0,cumsum(steps))
+
+    # Extraneous: 
+    fder <- diff(y)/diff(x)
+    # Second der is (fder[i] -fder[i-1])/(x[i] - x[i-1])
+    sder <- sapply(2:length(fder),x=x,fder=fder,function(i,fder,x){return((fder[i] -fder[i-1])/(x[i] - x[i-1]))})
+
+
     m <- c(cumsum(model))
-    p <- c(0,cumsum(steps))
     parea <- sum(sapply(2:(l+1),x=x,p=p,patharea))
     marea <- sum(sapply(2:(l+1),x=m,p=p,patharea))
 
     return(c(parea,marea,parea-marea))
+}
+
+curvature <- function(path){
+    # Normalize and create a similar, model, vector:
+    l <- length(path)
+    step <- 1/l
+    path <- path/sum(path)
+    #TODO START HALFWAY!
+    steps <- rep.int(step,l)
+    model <- c(step/2,rep.int(step,l-1),step/2)
+
+    x <- c(0,cumsum(path))
+    y <- c(0,cumsum(steps))
+
+    # Extraneous: 
+    fder <- diff(y)/diff(x)
+    # Second der is (fder[i] -fder[i-1])/(x[i] - x[i-1])
+    sder <- sapply(2:length(fder),x=x,fder=fder,function(i,fder,x){return((fder[i] -fder[i-1])/(x[i] - x[i-1]))})
+    return(mean(abs(sder)))
 }
 
     
@@ -91,30 +117,46 @@ if (FALSE){
 	    return(n)
 	}
     # Over 1500 nucleotides (similar numbers to Akt1):
-    simpath <- function(length,occ){
+    simpath <- function(length,occ,type){
         #TODO SIMULATE BY POISSON PROCESS to keep length
 	    #gene <- rpois(length,occ/length)
         gene <- BernouilliProcess(occ,occ/length)
 	    idx <- (1:length(gene))*(gene != 0)
 	    idx <- idx[(idx != 0)]
 	    dist <- c(idx[1],diff(idx))
-	    return(path(dist))
+        #curvature, or path:
+        if(type == 'c'){return(curvature(dist))}
+        if(type == 'a'){return(path(dist))}
     }
 
-    sim <- sapply(rep.int(1500,N),occ=15,simpath)
+    sim <- sapply(rep.int(1500,N),occ=15,type='a',simpath)
     dtf <- data.frame(cbind(t(sim),15))
     names(dtf) <- c('Path.area','Model.area','Test.Statistic','Occurrences')
 
 for(o in c(30,60,120,240,480)){
-    sim <- sapply(rep.int(1500,N),occ=o,simpath)
+    sim <- sapply(rep.int(1500,N),occ=o,type='a',simpath)
     sim <- data.frame(cbind(t(sim),o))
     names(sim) <- c('Path.area','Model.area','Test.Statistic','Occurrences')
     dtf <- rbind(dtf,sim)
 
 }
 
+#FOR curvature:
+    sim <- sapply(rep.int(1500,N),occ=15,type='c',simpath)
+    dtf <- data.frame(cbind(sim,15))
+    names(dtf) <- c('Test.Statistic','Occurrences')
+
+for(o in c(30,60,120,240,480)){
+    sim <- sapply(rep.int(1500,N),type='c',occ=o,simpath)
+    sim <- data.frame(cbind(sim,o))
+    names(sim) <- c('Test.Statistic','Occurrences')
+    dtf <- rbind(dtf,sim)
+
+}
+
+
     library(ggplot2)
-    ggplot(dtf,aes(Test.Statistic)) + geom_histogram(binwidth=.02) + facet_wrap(~Occurrences)
+    ggplot(dtf,aes(Test.Statistic)) + geom_histogram() + facet_wrap(~Occurrences)
 
 }
 

@@ -37,7 +37,7 @@ do
         #KEEP INDEX from full region:
 	    # Separate codons and take DMEL and DSIM region divergences (coding and noncoding):
 	    awk 'NR % 3 == 1{aaposition=$5;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c,aaposition)}}' $coding > $cddiv
-	    awk 'NR % 3 == 1{aaposition=$5;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c,aaposition)}}' $noncoding > $ncdiv
+	    awk 'NR % 3 == 1{aaposition=$5;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c,aaposition)}}' $noncoding > $ncdiv
     } fi
 done < $TARGETS
 
