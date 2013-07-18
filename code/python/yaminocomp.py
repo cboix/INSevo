@@ -24,20 +24,22 @@ def compacids(a,b):
         else:
             return "NS"
 
+#TODO write function to find a path for mutations w/ 2 (to separate as well, into two).
+
 # Function to write the comparison for one gene
 def genecomp(gene,prefix,cdnc,refresh):
     namef = prefix + '/project/yakgenes/' + gene + '.yak.div'
     nameout = prefix + '/project/yakgenes/' + gene + '.out'
 
-	# If out file exists, don't do this unless refresh.
+    # If out file exists, don't do this unless refresh.
     if (not os.path.exists(nameout) or refresh):
-		with open(namef,'r') as f:
-		    with open(nameout,'a') as out:
-		        for line in f:
-		            a = line.split(" ")
-		            a[-1] = a[-1][0]
-		            code = " ".join(a) + " " + compacids(a[0],a[1]) + "\n"
-		            out.write(code)
+        with open(namef,'r') as f:
+            with open(nameout,'a') as out:
+                for line in f:
+                    a = line.split(" ")
+                    a[-1] = a[-1][0]
+                    code = " ".join(a) + " " + compacids(a[0],a[1]) + "\n"
+                    out.write(code)
 
 # Loop over all gene targets
 targets= PREFIX + '/project/dmel_targets'

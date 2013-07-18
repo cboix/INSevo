@@ -5,9 +5,13 @@ code=$PREFIX/code/TajimaD.R
 out=$PREFIX/project/TajimaD
 
 DGRPDIV=$PREFIX/project/divergence/DGRPdiv 
-SIMDIV=$PREFIX/project/divergence/allsimdiv
-FULLDIV=$PREFIX/project/divergence/fulldiv 
+SIMDIV=$PREFIX/project/divergence/cd.sim.div
+YAKDIV=$PREFIX/project/divergence/cd.yak.div
+FULLDIV=$PREFIX/project/divergence/simfulldiv 
+FULLDIV2=$PREFIX/project/divergence/yakfulldiv 
+
 awk '{print $1,$2,$3}' $SIMDIV | sort +0 -1 | join - $DGRPDIV > $FULLDIV 
+awk '{print $1,$2,$3}' $YAKDIV | sort +0 -1 | join - $DGRPDIV > $FULLDIV2
 
 # New file:
 echo "" > $out

@@ -1,6 +1,20 @@
 #!/usr/bin/R
+# -------------------- Tajima's D Test--------------------
+TD <- read.delim('TajimaD',header=F,sep=" ")
+mat <- matrix(unlist(TD),ncol=2,byrow=F)
+dTD <- data.frame(mat[,1],as.numeric(mat[,2]))
+names(dTD) <- c('Gene','TajimaD')
 
+png('~/Labwork/Rwork/TajimaD.png',height=1200,width=1200)
+gTD <- ggplot(dTD,aes(Gene,TajimaD))
+gTD + geom_point(alpha=.8) + geom_hline(yintercept=c(0,-1.539,-1.765,-2.132,-2.462),color=c('black','red','red','red','red'),linetype='dashed') + theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs(x="Gene",y="Tajima's D")
+dev.off()
+
+# FROM now on, by species:
 # ------------------ McDonald Test ---------------------
+MKplot <- function(species){
+readname <- paste('SEMKproc.',species,sep="")
+dtf <- read.table(readname)
 MK <- read.table('MKdivsim')
 SE <- read.table('SEMKdivsim')
 tab <- cbind(MK,SE[,-1])
@@ -24,17 +38,6 @@ cbind(tab,pvalsout) -> dtf
 
 dtf2 <- dtf[dtf$pvalsout != 1,]
 
-
-# -------------------- Tajima's D Test----------------------------------------------------------
-TD <- read.delim('TajimaD',header=F,sep=" ")
-
-mat <- matrix(unlist(TD),ncol=2,byrow=F)
-dTD <- data.frame(mat[,1],as.numeric(mat[,2]))
-names(dTD) <- c('Gene','TajimaD')
-
-
-gTD <- ggplot(dTD,aes(Gene,TajimaD))
-gTD + geom_point(alpha=.8) + geom_hline(yintercept=c(0,-1.539,-1.765,-2.132,-2.462),color=c('black','red','red','red','red'),linetype='dashed') + theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs(x="Gene",y="Tajima's D")
 
 
 
