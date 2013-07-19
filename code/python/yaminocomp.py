@@ -1,9 +1,14 @@
 #!/usr/bin/python2.6
 PREFIX='/net/home/carlesba' #Take from arguments in bash.
-CDorNC='cd' #another argument that can be taken in bash.
 REFRESH=True #canonically false, but can be overwritten. THIS whole section should be parsed as args.
+targets= PREFIX + '/project/dmel_targets'
 
 import os.path
+import sys
+# Must run script on its own / w/out "python"
+if (len(sys.argv) > 1):
+    PREFIX = sys.argv[1]
+    targets = sys.argv[2]
 
 # Be sure to run w/ python2.6 (v2.6.5) instead of python (which is python v2.4.3)
 bases = ['t', 'c', 'a', 'g']
@@ -27,9 +32,9 @@ def compacids(a,b):
 #TODO write function to find a path for mutations w/ 2 (to separate as well, into two).
 
 # Function to write the comparison for one gene
-def genecomp(gene,prefix,cdnc,refresh):
-    namef = prefix + '/project/yakgenes/' + gene + '.yak.div'
-    nameout = prefix + '/project/yakgenes/' + gene + '.out'
+def genecomp(gene,prefix,refresh):
+    namef = prefix + '/db/DGRP/yakgenes/' + gene + '.yak.div'
+    nameout = prefix + '/db/DGRP/yakgenes/' + gene + '.out'
 
     # If out file exists, don't do this unless refresh.
     if (not os.path.exists(nameout) or refresh):
@@ -37,14 +42,12 @@ def genecomp(gene,prefix,cdnc,refresh):
             with open(nameout,'a') as out:
                 for line in f:
                     a = line.split(" ")
-                    a[-1] = a[-1][0]
+                    a[-1] = a[-1][:-1]
                     code = " ".join(a) + " " + compacids(a[0],a[1]) + "\n"
                     out.write(code)
 
 # Loop over all gene targets
-targets= PREFIX + '/project/dmel_targets'
 with open(targets,'r') as tar:
     for geneline in tar:
         g = geneline.split(" ")
-        genecomp(g[0],PREFIX,'cd',REFRESH)
-        genecomp(g[0],PREFIX,'nc',REFRESH)
+        genecomp(g[0],PREFIX,REFRESH)

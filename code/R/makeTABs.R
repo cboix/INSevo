@@ -5,7 +5,7 @@ MKprocess <- function(species,dTD){
     readnameMK <- paste('MKdiv',species,sep="")
     readnameSE <- paste('SEMKdiv',species,sep="")
 	MK <- read.table(readnameMK)
-	SE <- read.table('SEMKdivsim')
+	SE <- read.table(readnameSE)
 	tab <- cbind(MK,SE[,-1])
 	names(tab) <- c("Gene","Gstat","Chisq","p.value","Alpha","Ds","Dn","Ps","Pn")
 	tabfull <- tab

@@ -25,16 +25,19 @@ createGObxplts <- function(species,ALL){
 	names(dd) <- c('Term','Mean.p.value','Alpha.median')
 	MERGEALL <- merge(MERGEALL,dd)
 	
-	png(paste('~/Labwork/Rwork/BoxplotsMK.',species,'.png',sep=""),height=2000,width=800)
+    name <- paste('~/Labwork/Rwork/BoxplotsMK.',species,'.png',sep="")
+	png(name,height=2000,width=800)
 	ggplot(MERGEALL,aes(reorder(Name,Alpha.median),Alpha,color=Mean.p.value)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=paste("GO term v. MK value for ",species,sep=""),x='GO Name',y='Alpha (outliers below -20 removed)') + coord_flip() + facet_wrap(~Namespace) + scale_y_continuous(limits=c(-20,2))
 	dev.off()
 	
+    name1 <- paste('~/Labwork/Rwork/BoxplotsfullMK.',species,'.png',sep="")
 	#WITH the annoying outliers which shrink the plot:
-	png(paste('~/Labwork/Rwork/BoxplotsMK.',species,'.png',sep=""),height=2000,width=1000)
+	png(name1,height=2000,width=1000)
 	ggplot(MERGEALL,aes(reorder(Name,Alpha.median),Alpha,color=Mean.p.value)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=paste("GO term v. MK value for ",species,sep=""),x='GO Name',y='Alpha (no outliers removed)') + coord_flip() + facet_wrap(~Namespace)
 	dev.off()
 	
-	png(paste('~/Labwork/Rwork/BoxplotsTD.',species,'.png',sep=""),height=2000,width=1000)
+    name2 <- paste('~/Labwork/Rwork/BoxplotsTD.',species,'.png',sep="")
+	png(name2,height=2000,width=1000)
 	ggplot(MERGEALL,aes(reorder(Name,TajimaD),TajimaD,color=Mean.p.value)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=paste("GO term v. Tajima's D for ",species,sep=""),x='GO Name',y='Alpha (outliers below -20 removed)') + coord_flip() + facet_wrap(~Namespace)
 	dev.off()
 }
