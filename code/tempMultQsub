@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # Run in python
-for i in list(range(1,14)):
-    string = "qsub -clear -cwd -N remaps" + str(i) + " -b y ~/code/remapYak ~/project/genes/" + str(i) + "dmel_targets"
+for i in range(1,14):
+    string = "qsub -clear -cwd -N remaps" + str(i) + " -b y ~/code/remapYak ~/project/genes/" +str(i)+"dmel_targets"
     print(string)
+    

@@ -19,17 +19,14 @@ fi
 mkdir -p $YAKDIR
 
 if [[ ! -s $CDS ]] 
-then { awk '$2 ~ /FlyBase/ && $3 ~ /CDS/{gsub(";"," ",$0); gsub("Name="," ",$0); gsub("Name=","n;",$0); gsub(":"," ",$0); print $1,$3,$4,$5,$10,$11}' $PREFIX/db/Annotation/dmel-all-r5.33.gff | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > $CDS 
+then { awk '$2 ~ /FlyBase/ && $3 ~ /CDS/{gsub(";"," ",$0); gsub("Name="," ",$0); gsub("Name=","n;",$0); gsub(":"," ",$0); print $1,$3,$4,$5,$10,$11,$7}' $PREFIX/db/Annotation/dmel-all-r5.33.gff | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > $CDS 
 } fi
     # TODO the problem is IF I REMOVE chr_random then I will have gaps! and GFEXP will be off... (not by that much though. only one occurrence, in the exponential dist).
-    #TODO edit so that if $5 == 2, (in python) then a path finding function is made and a synonymous path is made.
+    # TODO edit so that if $5 == 2, (in python) then a path finding function is made and a synonymous path is made.
 #---------------------------------------------------------------------------#
 while read -r p
 do
-    eval $( echo $p | awk '{printf("GENE=%s; CHR=%s; FBGN=%s; cds=%s-cds",$1,$2,$11,$1)}' )
-    GENE=zuc
-    cds=zuc-cds
-    CHR=2L
+    eval $( echo $p | awk '{printf("GENE=%s; CHR=%s; FBGN=%s; cds=%s-cds;",$1,$2,$11,$1)}' )
     BED=$FULLGENES/$GENE\.bed
     YAKbed=$YAKDIR/$GENE\_yak.bed
     YAKdiv=$YAKDIR/$GENE\.yak.div
@@ -44,6 +41,7 @@ do
         awk -v gene=$GENE -v tr=$TR '$6 ~ gene && $5 == tr' $CDS | sort -u > $BED 
         #A warning!
         awk -v st=$ST -v en=$EN 'END{if(st > en){print "start is above end"}}' $BED
+        eval $( awk 'NR==1{printf("DCT=%s",$7)}' $BED )
        
         rm -f $YAKbed
         #Loop through the CDS that is EXPANDED.
@@ -55,16 +53,16 @@ do
             # Also, make sure we only get one record per case here: (we do overlaps case by case:)
             # Grab record, THEN cut out - in the melanogaster genome.
             awk -v st=$ST -v en=$EN 'BEGIN{RS="\n\n"}
-            $1 !~ /##/ && st < en && en <= $4 && st >= $3 {p=st-$3+1; e=en-$3+1; print p,e,$10,$11,"all"}
-            $1 !~ /##/ && st < en && en >=$4 && st >= $3 && st <= $4 {p=st-$3+1; e=$4-$3+1; print p,e,$10,$11,"leftside"}
-            $1 !~ /##/ && st < en && st <= $3 && en >=$4 {e=$4-$3+1; print 1,e,$10,$11,"inside"}
-            $1 !~ /##/ && st < en && st <=$3 && en <=$4 && en >=$3 {e=en-$3+1; print 1,e,$10,$11,"rightside"}' $AXT > .$GENE\tmp
+            $1 !~ /##/ && st < en && en <= $4 && st >= $3 {p=st-$3+1; e=en-$3+1; print p,e,$10,$11,"all",st; }
+            $1 !~ /##/ && st < en && en >=$4 && st >= $3 && st <= $4 {p=st-$3+1; e=$4-$3+1; print p,e,$10,$11,"leftside",st;}
+            $1 !~ /##/ && st < en && st <= $3 && en >=$4 {e=$4-$3+1; print 1,e,$10,$11,"inside",st;}
+            $1 !~ /##/ && st < en && st <=$3 && en <=$4 && en >=$3 {e=en-$3+1; print 1,e,$10,$11,"rightside",st;}' $AXT > .$GENE\tmp
             while read -r tline 
             do
-                eval $( echo $tline | awk '{printf("pst=%s; est=%s;",$1,$2)}' )
-                echo $tline | awk '{printf("%s\n%s",$3,$4)}' | perl -F, -ane ' $,=" "; print split("",$F[0])' | awk 'BEGIN{split("",a);}{count = 0;for(i = 1; i <=NF; i++){a[i]=sprintf("%s%s %s ",a[i],$i,i)}}END{for(i = 1; i <=NF;i++){print a[i]}}' | awk '$1 !~ /-/' | awk -v st=$pst -v en=$est 'NR >= st && NR <= en' | awk '{print $1,$3,$4}' >> $YAKbed
+                eval $( echo $tline | awk '{printf("pst=%s; est=%s; rst=%s; msg=%s",$1,$2,$6,$5)}' )
+                echo $tline | awk '{printf("%s\n%s",$3,$4)}' | perl -F, -ane ' $,=" "; print split("",$F[0])' | awk 'BEGIN{split("",a);}{count = 0;for(i = 1; i <=NF; i++){a[i]=sprintf("%s%s ",a[i],$i)}}END{for(i = 1; i <=NF;i++){print a[i]}}' | awk '$1 !~ /-/' | awk -v st=$pst -v en=$est -v rst=$rst 'NR >= st && NR <= en{print $1,$2,NR+rst-st}' >> $YAKbed
             done < .$GENE\tmp
-            #rm .$GENE\tmp
+            rm .$GENE\tmp
             # awk -v st=$ST -v en=$EN 'BEGIN{RS="\n\n"}
             # $1 !~ /##/ && st < en && en <= $4 && st >= $3 {p=st-$3+1; e=en-st+1; m=substr($10,p,e); y=substr($11,p,e); print m,y,"all",st,en}
             #$1 !~ /##/ && st < en && en >=$4 && st >= $3 && st <= $4 {p=st-$3+1; e=$4-st+1; m=substr($10,p,e); y=substr($11,p,e); print m,y,"leftside",st,$4}
@@ -72,7 +70,7 @@ do
             #$1 !~ /##/ && st < en && st <=$3 && en <=$4 && en >=$3 {e=en-$3+1;m=substr($10,1,e);y=substr($11,1,e); print m,y,"rightside",$3,en}' $AXT >> $YAKbed
         done < $BED
         #Work needs to be done to integrate if not all are "all" (but they should be).
-        awk 'NR % 3 == 1{aaposition=NR;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],c,aaposition)}}' $YAKbed | awk '$2 !~ /[XNn-]/' > $YAKdiv
+        sort -uk 3 $YAKbed | sort -nk 3 | awk '$1 !~/[actg]/' | awk -v dc=$DCT 'BEGIN{split("",a)}{b=$0; if(dc ~ /-/){f3=$3; f1=($1 ~/C/?"G":($1~/G/?"C":($1~/A/?"T":($1~/T/?"A":"N")))); f2=($2 ~/C/?"G":($2~/G/?"C":($2~/A/?"T":($2~/T/?"A":"N")))); b=sprintf("%s %s %s",f1,f2,f3);}a[NR]=b}END{for(i=1; i <=NR; i++){out=(dc~/+/?a[i]:a[NR-i+1]); print out}}' | awk 'NR % 3 == 1{aaposition=NR;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],c,aaposition)}}' | awk '$2 !~ /[XNn-]/' > $YAKdiv
 
   } fi
 done < $TARGETS
@@ -94,7 +92,7 @@ do
         if [[ "$NONSENSE" == "0" ]] 
         then {
         #TODO Step here to edit whether div is in same location:
-    sort -u $YAKout | awk -v gene=$GENE '$5 ~ /SY/{sy=(sy?sy+1:1);}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy}' >> $ydiv
+    sort -u $YAKout | awk -v gene=$GENE 'BEGIN{sy=0;ns=0}$5 ~ /SY/{sy=sy+1}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy}' >> $ydiv
         } fi
     } fi
 done < $TARGETS
@@ -102,3 +100,4 @@ done < $TARGETS
 } fi
 
 #Clear files that will not be used anymore:
+#Nothing as of yet! :)

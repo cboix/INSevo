@@ -1,0 +1,61 @@
+#!/bin/bash
+PREFIX=/net/home/carlesba
+YAKDIR=$PREFIX/db/DGRP/yakgenes
+PFAMDB=$PREFIX/project/pfam.genes
+
+#For running parallel jobs:
+if [ "$1" == "" ]
+then
+    TARGETS=$PREFIX/project/dmel_targets
+else
+    TARGETS=$1
+fi
+
+while read -r p
+do
+    eval $( echo $p | awk '{printf("GENE=%s;",$1)}' )
+
+    echo "Getting domains for $GENE:"
+    #Get the sequence:
+    SEQ=.$GENE\.seq
+    PSEQ=.$GENE\.prot.seq
+    XML=.$GENE\.xml
+    awk '{print $1}' $YAKDIR/$GENE\_yak.bed | awk 'BEGIN{RS="\n"; ORS=""}{gsub("\n","",$0); print $0}' > $SEQ
+
+    # Let them do the alignment for me: 
+    eval $( echo "curl -H 'Expect:' -F seq='<$SEQ' -F output=xml 'http://pfam.sanger.ac.uk/search/sequence' > $XML" )
+
+    #Get the first protein alignment (we should loop over ALL protein alignments? No because this is already compiled starting w/ ATG atm.
+    awk 'BEGIN{a=0}$0 ~ /proteinSeqs:/{a=1;print $0}a==1{if($0 ~/\]/){a=0}else{print $0};}' $XML | awk 'BEGIN{RS="\n";ORS="\n";a=0}a==0 && $0 ~ /\"/{a=1; gsub(/[\",; ]+/,""); print $0}' > $PSEQ
+
+    #GET the real data:
+    eval $( echo "curl -H 'Expect:' -F seq='<$PSEQ' -F output=xml 'http://pfam.sanger.ac.uk/search/sequence' > $XML" )
+    eval $( grep -Eo "http.*output=xml" $XML | awk '{printf("GETURL=%s",$0)}' )
+
+    curl $GETURL > $XML
+    eval $(awk 'NR==1{printf("STS=%s",$1)}' $XML)
+    while [[ "$STS" == "PEND" || "$STS" == "RUN" ]] 
+    do
+        sleep 1s
+        curl $GETURL > $XML
+        eval $(awk 'NR==1{printf("STS=%s",$1)}' $XML)
+    done
+
+    #PARSE the real data and return gene, id (eg Protein kinases), and class (domain, family etc)
+    awk -v gene=$GENE '$0 ~ /match accession/{ gsub(/[<\"=]/," ");gsub("  "," "); print gene,$5,$9}' $XML >> $PFAMDB
+
+    #Clean up
+    rm $XML $SEQ $PSEQ
+
+done < $TARGETS
+
+if [ "$1" == "" ]
+then {
+    #Make sure we don't have annoying overlaps:
+    sort -u $PFAMDB > .tmp
+    cat .tmp > $PFAMDB
+    rm .tmp
+} fi
+
+echo "DONE!"
+

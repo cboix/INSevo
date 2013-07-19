@@ -8,7 +8,8 @@ names(ALL) <- c('Gene','Term')
 ALL <- merge(ALL,TERMS)
 
 #Then, a function to create the boxplots:
-createGObxplts <- function(species,ALL){
+createGO <- function(species,ALL){
+    #species <- 'yak'
 	library(ggplot2)
 	TDMK <- read.table(paste('~/Labwork/Rwork/TDMKtab.',species,sep=""))
 	#GO terms:
@@ -42,5 +43,5 @@ createGObxplts <- function(species,ALL){
 	dev.off()
 }
 
-createGObxplts('yak',ALL)
-createGObxplts('sim',ALL)
+createGO('yak',ALL)
+createGO('sim',ALL)

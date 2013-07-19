@@ -24,11 +24,11 @@ cbind(BOTH,dAlpha) -> BOTH
 #Plotting:
 library(ggplot2)
 png('YakvSimAlpha.png',height=1000,width=1000)
-ggplot(BOTH,aes(sAlpha,yAlpha,color=yakpvals)) + geom_point(alpha=.8) + labs(x="Alpha of Simulans Divergence",y="Alpha of Yakuba Divergence") + scale_x_continuous(limits=c(-10,2)) + scale_y_continuous(limits=c(-10,2))
+ggplot(BOTH,aes(sAlpha,yAlpha)) + geom_point(alpha=.8,aes(color=simpvals),size=2.75) +geom_point(alpha=.8,aes(color=yakpvals),size=1.75) + labs(x="Alpha of Simulans Divergence",y="Alpha of Yakuba Divergence") + scale_x_continuous(limits=c(-10,2)) + scale_y_continuous(limits=c(-10,2)) + scale_color_gradient(name="p.value")
 dev.off()
 
 png('AlphabySpecies2.png',width=1500,heigh=1500)
-ggplot(BOTH,aes(sAlpha,yAlpha,color=yakpvals)) + geom_point(alpha=.8) + labs(x="Alpha of Simulans Divergence",y="Alpha of Yakuba Divergence") + scale_x_continuous(limits=c(-10,2)) + scale_y_continuous(limits=c(-10,2)) + geom_text(data=BOTH,aes(sAlpha,yAlpha,label=Gene),size=3,vjust=1.5,hjust=.5)
+ggplot(BOTH,aes(sAlpha,yAlpha,color=yakpvals)) + geom_point(alpha=.8,aes(color=simpvals),size=2.75) +geom_point(alpha=.8,aes(color=yakpvals),size=1.75) + labs(x="Alpha of Simulans Divergence",y="Alpha of Yakuba Divergence") + scale_x_continuous(limits=c(-10,2)) + scale_y_continuous(limits=c(-10,2)) + scale_color_gradient(name="p.value") + geom_text(data=BOTH,aes(sAlpha,yAlpha,label=Gene),size=2.5,vjust=1.5,hjust=.5)
 dev.off()
 
 png('AlphaDifferenceDensity.png')
@@ -37,7 +37,7 @@ dev.off()
 
 # FROM now on, by species:
 # ------------------ McDonald Test ---------------------
-species <- 'yak'
+species <- 'sim'
 readname <- paste('TDMKtab.',species,sep="")
 dtf <- read.table(readname)
 aDTF <- dtf
@@ -52,7 +52,6 @@ idx3 <-(aDTF$pvalsout != 1)*(aDTF$TajimaD > -2.132)*1:nrow(aDTF)
 lab3DTF <- aDTF[idx3,]
 idx4 <-(aDTF$pvalsout != 1)*(aDTF$TajimaD > -2.132)*(aDTF$Alpha > 0)*1:nrow(aDTF)
 lab4DTF <- aDTF[idx4,]
-
 
 #Plotting the McDonald Kreitman values ------------------------------------------------------
 library(ggplot2)
@@ -71,9 +70,10 @@ g2 + geom_point() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + l
 
 #Plotting the TD and MK values together -----------------------------------------------------
 
+AvA=0
 dev.new()
 glab1 <- ggplot(aDTF,aes(Alpha,TajimaD,color=pvalsout))
-glab1 + geom_point(alpha=0.8) + labs(x="MK test - Alpha",y="Tajima's D value") +  geom_hline(yintercept=c(0,-2.132),color=c('black','red'),linetype='dashed') + geom_vline(xintercept=AvA,color='green',linetype='dashed') + geom_text(data=labDTF,aes(Alpha,TajimaD,label= Gene),vjust=1.5,hjust=.1,size=3)
+glab1 + geom_point(alpha=0.8) + labs(x="MK test - Alpha",y="Tajima's D value") +  geom_hline(yintercept=c(0,-2.132),color=c('black','red'),linetype='dashed') + geom_vline(xintercept=AvA,color='green',linetype='dashed') + geom_text(data=aDTF,aes(Alpha,TajimaD,label= Gene),vjust=1.5,hjust=.1,size=3)
 
 dev.new()
 glab2 <- ggplot(aDTF,aes(Alpha,TajimaD,color=pvalsout))
