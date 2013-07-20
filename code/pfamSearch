@@ -14,38 +14,42 @@ fi
 while read -r p
 do
     eval $( echo $p | awk '{printf("GENE=%s;",$1)}' )
+    eval $( awk -v gene=$GENE '$1 == gene' | awk 'END{printf("LNR=%s",NR)}' )
 
-    echo "Getting domains for $GENE:"
-    #Get the sequence:
-    SEQ=.$GENE\.seq
-    PSEQ=.$GENE\.prot.seq
-    XML=.$GENE\.xml
-    awk '{print $1}' $YAKDIR/$GENE\_yak.bed | awk 'BEGIN{RS="\n"; ORS=""}{gsub("\n","",$0); print $0}' > $SEQ
-
-    # Let them do the alignment for me: 
-    eval $( echo "curl -H 'Expect:' -F seq='<$SEQ' -F output=xml 'http://pfam.sanger.ac.uk/search/sequence' > $XML" )
-
-    #Get the first protein alignment (we should loop over ALL protein alignments? No because this is already compiled starting w/ ATG atm.
-    awk 'BEGIN{a=0}$0 ~ /proteinSeqs:/{a=1;print $0}a==1{if($0 ~/\]/){a=0}else{print $0};}' $XML | awk 'BEGIN{RS="\n";ORS="\n";a=0}a==0 && $0 ~ /\"/{a=1; gsub(/[\",; ]+/,""); print $0}' > $PSEQ
-
-    #GET the real data:
-    eval $( echo "curl -H 'Expect:' -F seq='<$PSEQ' -F output=xml 'http://pfam.sanger.ac.uk/search/sequence' > $XML" )
-    eval $( grep -Eo "http.*output=xml" $XML | awk '{printf("GETURL=%s",$0)}' )
-
-    curl $GETURL > $XML
-    eval $(awk 'NR==1{printf("STS=%s",$1)}' $XML)
-    while [[ "$STS" == "PEND" || "$STS" == "RUN" ]] 
-    do
-        sleep 1s
-        curl $GETURL > $XML
-        eval $(awk 'NR==1{printf("STS=%s",$1)}' $XML)
-    done
-
-    #PARSE the real data and return gene, id (eg Protein kinases), and class (domain, family etc)
-    awk -v gene=$GENE '$0 ~ /match accession/{ gsub(/[<\"=]/," ");gsub("  "," "); print gene,$5,$9}' $XML >> $PFAMDB
-
-    #Clean up
-    rm $XML $SEQ $PSEQ
+    if [[ "$LNR" == "0" ]] 
+    then {
+	    echo "Getting domains for $GENE:"
+	    #Get the sequence:
+	    SEQ=.$GENE\.seq
+	    PSEQ=.$GENE\.prot.seq
+	    XML=.$GENE\.xml
+	    awk '{print $1}' $YAKDIR/$GENE\_yak.bed | awk 'BEGIN{RS="\n"; ORS=""}{gsub("\n","",$0); print $0}' > $SEQ
+	
+	    # Let them do the alignment for me: 
+	    eval $( echo "curl -H 'Expect:' -F seq='<$SEQ' -F output=xml 'http://pfam.sanger.ac.uk/search/sequence' > $XML" )
+	
+	    #Get the first protein alignment (we should loop over ALL protein alignments? No because this is already compiled starting w/ ATG atm.
+	    awk 'BEGIN{a=0}$0 ~ /proteinSeqs:/{a=1;print $0}a==1{if($0 ~/\]/){a=0}else{print $0};}' $XML | awk 'BEGIN{RS="\n";ORS="\n";a=0}a==0 && $0 ~ /\"/{a=1; gsub(/[\",; ]+/,""); print $0}' > $PSEQ
+	
+	    #GET the real data:
+	    eval $( echo "curl -H 'Expect:' -F seq='<$PSEQ' -F output=xml 'http://pfam.sanger.ac.uk/search/sequence' > $XML" )
+	    eval $( grep -Eo "http.*output=xml" $XML | awk '{printf("GETURL=%s",$0)}' )
+	
+	    curl $GETURL > $XML
+	    eval $(awk 'NR==1{printf("STS=%s",$1)}' $XML)
+	    while [[ "$STS" == "PEND" || "$STS" == "RUN" ]] 
+	    do
+	        sleep 1s
+	        curl $GETURL > $XML
+	        eval $(awk 'NR==1{printf("STS=%s",$1)}' $XML)
+	    done
+	
+	    #PARSE the real data and return gene, id (eg Protein kinases), and class (domain, family etc)
+        awk -v gene=$GENE 'BEGIN{a=0;}$0 ~ /match accession/{gsub(/[<\"=]/," ");gsub("  "," "); print gene,$5,$9;a=1}END{if(a=0){print gene,"None","None"}' $XML >> $PFAMDB
+	
+	    #Clean up
+	    rm $XML $SEQ $PSEQ
+    } fi
 
 done < $TARGETS
 
