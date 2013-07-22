@@ -17,7 +17,7 @@ join b a | join - c | awk '{name=$1; gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print
 
 # Split for fast processing!
 mkdir -p $PREFIX/project/genes/
-awk -v prefix=$PREFIX '{len=((NR - NR % 100)/100 + 1); print > prefix "/project/genes/" int($2) "dmel_targets"}' $PREFIX/project/dmel_targets
+awk -v prefix=$PREFIX '{len=((NR - NR % 100)/100 + 1); print > prefix "/project/genes/" int(len) "dmel_targets"}' $PREFIX/project/dmel_targets
 
 #Create RANDOM SERIES OF GENES to compare against. (Are the genes we are seeing significant??)
 eval $( awk 'END{printf("NRGENES=%s",NR)}' a )
@@ -35,7 +35,7 @@ done < $PREFIX/project/randomnum
 
     sort +0 -1 $PREFIX/project/randomgenes | join - c | awk '{name=$1; gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print $0,($5-$4+1),name}' > $PREFIX/project/random_targets
     mkdir -p $PREFIX/project/random
-    awk -v prefix=$PREFIX '{len=((NR - NR % 100)/100 + 1); print > prefix "/project/random/" int($2) "random_targets"}' $PREFIX/project/dmel_targets
+    awk -v prefix=$PREFIX '{len=((NR - NR % 100)/100 + 1); print > prefix "/project/random/" int(len) "random_targets"}' $PREFIX/project/random_targets
 
 rm $PREFIX/project/randomnum
 } fi

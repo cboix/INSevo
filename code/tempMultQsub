@@ -1,6 +1,16 @@
 #!/usr/bin/python
 # Run in python
-for i in range(1,14):
-    string = "qsub -clear -cwd -N remaps" + str(i) + " -b y ~/code/remapYak ~/project/genes/" +str(i)+"dmel_targets"
-    print(string)
+qsub -clear -cwd -N remaps1 -b y ~/code/remapYak ~/project/genes/1dmel_targets
+qsub -clear -cwd -N remaps2 -b y ~/code/remapYak ~/project/genes/2dmel_targets
+qsub -clear -cwd -N remaps3 -b y ~/code/remapYak ~/project/genes/3dmel_targets
+qsub -clear -cwd -N remaps4 -b y ~/code/remapYak ~/project/genes/4dmel_targets
+qsub -clear -cwd -N remaps5 -b y ~/code/remapYak ~/project/genes/5dmel_targets
+qsub -clear -cwd -N remaps6 -b y ~/code/remapYak ~/project/genes/6dmel_targets
+qsub -clear -cwd -N remaps7 -b y ~/code/remapYak ~/project/genes/7dmel_targets
+qsub -clear -cwd -N remaps8 -b y ~/code/remapYak ~/project/genes/8dmel_targets
+qsub -clear -cwd -N remaps9 -b y ~/code/remapYak ~/project/genes/9dmel_targets
+qsub -clear -cwd -N remaps10 -b y ~/code/remapYak ~/project/genes/10dmel_targets
+qsub -clear -cwd -N remaps11 -b y ~/code/remapYak ~/project/genes/11dmel_targets
+qsub -clear -cwd -N remaps12 -b y ~/code/remapYak ~/project/genes/12dmel_targets
+qsub -clear -cwd -N remaps13 -b y ~/code/remapYak ~/project/genes/13dmel_targets
     
