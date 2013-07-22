@@ -1,9 +1,9 @@
 #!/usr/bin/R
 #First, the term data.frame:
-TERMS <- read.delim('~/Labwork/Annotation/short.obo',header=F,sep="\t")
+TERMS <- read.delim('~/Labwork/Annotation/GO/short.obo',header=F,sep="\t")
 names(TERMS) <- c('Term','Name','Namespace')
 # using the reduced geneall:
-read.delim('~/Labwork/Annotation/red10geneall',header=F,sep=" ") -> ALL
+read.delim('~/Labwork/Annotation/GO/red10geneall',header=F,sep=" ") -> ALL
 names(ALL) <- c('Gene','Term')
 ALL <- merge(ALL,TERMS)
 

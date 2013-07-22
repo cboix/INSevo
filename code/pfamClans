@@ -1,0 +1,15 @@
+#!/bin/bash
+ANNOTATION=~/Labwork/Annotation/PFAM
+CLANS=$ANNOTATION/clans
+CLANSF=$ANNOTATION/link_clans
+PFAM=$ANNOTATION/pfamA
+LINK=$ANNOTATION/memberclans
+#THE output of pfamSearch
+GENES=$ANNOTATION/pfam.genes 
+GENES2=$ANNOTATION/genes.ann
+awk '{print $2,$1,$3}' $GENES | sort +0 -1 > tmp 
+awk '{print $3,$1,$2}' $PFAM | sort +0 -1 | join tmp - > $GENES2
+awk '$0 ~ /None/{print $0,"None","None"}' tmp >> $GENES2
+
+sort -n $LINK > mclans
+awk '{gsub(" ","_"); print $0}' $CLANS | join mclans - > $CLANSF

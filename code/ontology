@@ -2,7 +2,7 @@
 PREFIX=/home/net/carlesba
 TARGETS=~/Labwork/project/targets
 #ANNOTATION=$PREFIX/db/Annotation/GO
-ANNOTATION=~/Labwork/Annotation
+ANNOTATION=~/Labwork/Annotation/GO
 FB=$ANNOTATION/gene_association.fb
 GENETAR=$ANNOTATION/geneall
 BYGENE=$ANNOTATION/gene_ann

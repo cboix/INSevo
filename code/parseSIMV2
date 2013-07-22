@@ -65,18 +65,18 @@ do
 done < $TARGETS
 
 # Assess distribution of distances between SNPs
-echo "Assessing randomness of the SNP positions"; echo "" > $PREFIX/project/GFExp
+echo "Assessing randomness of the SNP positions"; echo "" > $PREFIX/project/GFExpsim
 while read -r p
 do
     eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
-
+    echo "Evaluating $GENE"
     LENGTH=$( awk 'END{print NR}' $DIVDIR/$GENE\.cd.sim )
 
     awk 'BEGIN{a=0}$0 ~ /SY/{print $3-a; a=$3}' $DIVDIR/$GENE\.cd.out > $DIVDIR/$GENE\.sy.dist
     awk 'BEGIN{a=0}$0 ~ /NS/{print $3-a; a=$3}' $DIVDIR/$GENE\.cd.out > $DIVDIR/$GENE\.ns.dist
 
     # Run R command to process this:
-    R --slave -f $PREFIX/code/GFexp.R --args $LENGTH $PREFIX $GENE >> $PREFIX/project/GFExp
+    R --slave -f $PREFIX/code/GFexp.R --args $LENGTH $PREFIX $GENE sim >> $PREFIX/project/GFExpsim
 
 done < $TARGETS
 

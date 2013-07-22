@@ -1,6 +1,6 @@
 #!/bin/bash
 #Take a series of GO #s from arguments (right now as a file):
-ANNOTATION=~/Labwork/Annotation
+ANNOTATION=~/Labwork/Annotation/GO
 TERMS=$ANNOTATION/compGOterms
 BYGO=$ANNOTATION/GO_ann
 GENES=$ANNOTATION/termgenes
