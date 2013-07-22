@@ -19,5 +19,25 @@ join b a | join - c | awk '{name=$1; gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print
 mkdir -p $PREFIX/project/genes/
 awk -v prefix=$PREFIX '{len=((NR - NR % 100)/100 + 1); print > prefix "/project/genes/" int($2) "dmel_targets"}' $PREFIX/project/dmel_targets
 
+#Create RANDOM SERIES OF GENES to compare against. (Are the genes we are seeing significant??)
+eval $( awk 'END{printf("NRGENES=%s",NR)}' a )
+if [[ ! -e $PREFIX/project/random_targets ]] 
+then {
+    Rscript -e 'args <- commandArgs(TRUE);write(round(runif(1500,1,as.numeric(args[1]))),paste(args[2],"/project/rg",sep=""))' $NRGENES $PREFIX
+    awk '{gsub(" ","\n"); print $0}' $PREFIX/project/rg | sort -u > $PREFIX/project/randomnum
+    rm $PREFIX/project/rg
+
+    rm $PREFIX/project/randomgenes
+while read -r p 
+do 
+    eval $( echo $p | awk -v pref=$PREFIX '{printf("sed -n \"%sp\" a >> %s/project/randomgenes",$1,pref)}' )
+done < $PREFIX/project/randomnum
+
+    sort +0 -1 $PREFIX/project/randomgenes | join - c | awk '{name=$1; gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); print $0,($5-$4+1),name}' > $PREFIX/project/random_targets
+    mkdir -p $PREFIX/project/random
+    awk -v prefix=$PREFIX '{len=((NR - NR % 100)/100 + 1); print > prefix "/project/random/" int($2) "random_targets"}' $PREFIX/project/dmel_targets
+
+rm $PREFIX/project/randomnum
+} fi
 
 rm a b c

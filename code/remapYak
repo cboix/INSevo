@@ -117,7 +117,7 @@ do
         if [[ "$NONSENSE" == "0" ]] 
         then {
         #TODO Step here to edit whether div is in same location:
-    sort -u $YAKout | awk -v gene=$GENE 'BEGIN{sy=0;ns=0}$5 ~ /SY/{sy=sy+1}$5 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy}' >> $ydiv
+    sort -u $YAKout | awk -v gene=$GENE 'BEGIN{sy=0;ns=0}$6 ~ /SY/{sy=sy+1}$6 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy}' >> $ydiv
         } fi
     } fi
 done < $TARGETS
