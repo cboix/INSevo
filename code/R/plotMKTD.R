@@ -5,6 +5,7 @@ mat <- matrix(unlist(TD),ncol=2,byrow=F)
 dTD <- data.frame(mat[,1],as.numeric(mat[,2]))
 names(dTD) <- c('Gene','TajimaD')
 
+library(ggplot2)
 png('~/Labwork/Rwork/TajimaD.png',height=1200,width=1200)
 gTD <- ggplot(dTD,aes(Gene,TajimaD))
 gTD + geom_point(alpha=.8) + geom_hline(yintercept=c(0,-1.539,-1.765,-2.132,-2.462),color=c('black','red','red','red','red'),linetype='dashed') + theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs(x="Gene",y="Tajima's D")
@@ -22,7 +23,6 @@ dAlpha <- BOTH$sAlpha - BOTH$yAlpha
 cbind(BOTH,dAlpha) -> BOTH
 
 #Plotting:
-library(ggplot2)
 png('YakvSimAlpha.png',height=1000,width=1000)
 ggplot(BOTH,aes(sAlpha,yAlpha)) + geom_point(alpha=.8,aes(color=simpvals),size=2.75) +geom_point(alpha=.8,aes(color=yakpvals),size=1.75) + labs(x="Alpha of Simulans Divergence",y="Alpha of Yakuba Divergence") + scale_x_continuous(limits=c(-10,2)) + scale_y_continuous(limits=c(-10,2)) + scale_color_gradient(name="p.value")
 dev.off()
@@ -54,7 +54,6 @@ idx4 <-(aDTF$pvalsout != 1)*(aDTF$TajimaD > -2.132)*(aDTF$Alpha > 0)*1:nrow(aDTF
 lab4DTF <- aDTF[idx4,]
 
 #Plotting the McDonald Kreitman values ------------------------------------------------------
-library(ggplot2)
 #png('MKall.png')
 g1 <- ggplot(dtf,aes(x=reorder(Gene,Alpha),Alpha,color=p.value)) 
 g1 + geom_point() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + geom_hline(yintercept=AvA,color='red',linetype='dashed')

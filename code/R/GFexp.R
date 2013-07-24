@@ -126,7 +126,7 @@ SYc.stat <- curvature(SY[[1]])
 NSc.stat <- curvature(NS[[1]])
     
 # Print out results:
-out <- paste(gene,SYp.value,SYdf,NSp.value,NSdf,SYa.stat,NSa.stat,SYc.stat,NSc.stat,length(SY[[1]]),length(NS[[1]])
+out <- paste(gene,SYp.value,SYdf,NSp.value,NSdf,SYa.stat,NSa.stat,SYc.stat,NSc.stat,length(SY[[1]]),length(NS[[1]]))
 cat(out)
 cat("\n")
 }

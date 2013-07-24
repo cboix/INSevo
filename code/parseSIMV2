@@ -4,8 +4,23 @@ PREFIX=/net/home/carlesba
 TARGETS=$PREFIX/project/dmel_targets
 AMINOCOMP=$PREFIX/code/aminocomp.py
 DIVDIR=$PREFIX/project/divergence
-CDSIMDIV=$DIVDIR/cd.sim.div
-NCSIMDIV=$DIVDIR/nc.sim.div
+
+#For running parallel jobs:
+if [ "$1" == "" ]
+then {
+    TARGETS=$PREFIX/project/dmel_targets
+    CDSIMDIV=$DIVDIR/cd.sim.div
+    NCSIMDIV=$DIVDIR/nc.sim.div
+    GFEXPDB=$PREFIX/project/GFExpsimcon
+} elif [ "$1" == "CONTROL" ]
+then {
+    TARGETS=$PREFIX/project/random_targets
+    CDSIMDIV=$DIVDIR/cd.sim.control.div
+    NCSIMDIV=$DIVDIR/nc.sim.control.div
+    GFEXPDB=$PREFIX/project/GFExpsimcon
+} else {
+    TARGETS=$1
+} fi
 
 # Folders:
 mkdir -p $DIVDIR
@@ -37,46 +52,64 @@ do
         #KEEP INDEX from full region:
 	    # Separate codons and take DMEL and DSIM region divergences (coding and noncoding):
 	    awk 'NR % 3 == 1{aaposition=$5;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c,aaposition)}}' $coding > $cddiv
+
+        # Of course we want something completely different for NC:
 	    awk 'NR % 3 == 1{aaposition=$5;split("",a);split("",b);c=0; for(i=1;i <=2;i++){a[i]=$1;b[i]=$2;if($1!~$2){c=c+1}; getline};i=3;a[i]=$1;b[i]=$2;if($1!~$2){c=c+1};if(c > 0){printf("%s%s%s %s%s%s %s %s %s\n",a[1],a[2],a[3],b[1],b[2],b[3],NR-2,c,aaposition)}}' $noncoding > $ncdiv
     } fi
 done < $TARGETS
 
     #RUN PYTHON SCRIPT to compare amino acids. Also need to pass arguments (do <+later+>)
-    $AMINOCOMP
+    CDorNC=cd
+    $AMINOCOMP $PREFIX $TARGETS $CDorNC
 
+if [[ "$1" == "" || "$1" == "CONTROL" ]]
+then {
 #Once the divergences are computed in the python code, output counts to a full divergence file.
 echo "Compiling full divergence file"; echo "" > $CDSIMDIV; echo "" > $NCSIMDIV
 while read -r p
 do 
     eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
     pycdout=$DIVDIR/$GENE\.cd.out
-    pyncout=$DIVDIR/$GENE\.nc.out
-    # RUN IF EXISTS! not other way around! (Bug that was killing the pipeline before)
+    ncdiv=$DIVDIR/$GENE\.nc.simdiv
     if [[ -e $pycdout && -e $pyncout ]]
     then {
         NONSENSE=$( grep NONSENSE $pycdout | awk 'END{print NR}' )
         if [[ "$NONSENSE" == "0" ]] 
         then {
         #TODO Step here to edit whether div is in same location:
-            awk -v gene=$GENE '$6 ~ /SY/{sy=(sy?sy+1:1);}$6 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pycdout >> $CDSIMDIV
-            awk -v gene=$GENE '$6 ~ /SY/{sy=(sy?sy+1:1);}$6 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy }' $pyncout >> $NCSIMDIV
+            awk -v gene=$GENE 'BEGIN{sy=0;ns=0}$6~/SY/{sy=sy+1;}$6~/NS/{ns=ns+1;}END{print gene,sy,ns,ns+sy }' $pycdout >> $CDSIMDIV
+            eval $( awk -v gene=$GENE '$6 ~ /SY/{sy=(sy?sy+1:1);}END{printf("SYC=%s",sy)}' )
+            awk -v gene=$GENE -v syc=$SYC 'BEGIN{ns=0}{ns=ns+$4;}END{print gene,syc,ns,ns+syc }' $ncdiv >> $NCSIMDIV
         } fi
     } fi
 done < $TARGETS
+} fi
 
+if [[ "$1" == "" || "$1" == "CONTROL" ]]
+then {
 # Assess distribution of distances between SNPs
 echo "Assessing randomness of the SNP positions"; echo "" > $PREFIX/project/GFExpsim
 while read -r p
 do
     eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
-    echo "Evaluating $GENE"
-    LENGTH=$( awk 'END{print NR}' $DIVDIR/$GENE\.cd.sim )
+    pycdout=$DIVDIR/$GENE\.cd.out
+    NONSENSE=$( grep NONSENSE $YAKout | awk 'END{print NR}' )
+    if [[ "$NONSENSE" == "0" ]] 
+    then {
 
-    awk 'BEGIN{a=0}$0 ~ /SY/{print $3-a; a=$3}' $DIVDIR/$GENE\.cd.out > $DIVDIR/$GENE\.sy.dist
-    awk 'BEGIN{a=0}$0 ~ /NS/{print $3-a; a=$3}' $DIVDIR/$GENE\.cd.out > $DIVDIR/$GENE\.ns.dist
+	    echo "Evaluating $GENE"
+	    LENGTH=$( awk 'END{print NR}' $DIVDIR/$GENE\.cd.sim )
+	
+	    awk 'BEGIN{a=0}$0 ~ /SY/{print $3-a; a=$3}' $pycdout > $DIVDIR/$GENE\.sy.dist
+	    awk 'BEGIN{a=0}$0 ~ /NS/{print $3-a; a=$3}' $pycdout > $DIVDIR/$GENE\.ns.dist
+	
+	    # Run R command to process this:
+		    R --slave -f $PREFIX/code/GFexp.R --args $LENGTH $PREFIX $GENE sim >> $GFEXPDB
 
-    # Run R command to process this:
-    R --slave -f $PREFIX/code/GFexp.R --args $LENGTH $PREFIX $GENE sim >> $PREFIX/project/GFExpsim
-
+    } fi 
 done < $TARGETS
+} fi
+
+
+
 

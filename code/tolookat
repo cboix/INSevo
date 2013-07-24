@@ -47,14 +47,15 @@ Cyp6t2Psi
 Cyp9f3Psi
 fray
 h
-
+#Genes with bad bed files:
+Aats-ile CG10082 CG1021 CG2698 CG40378 CG42708 CG5613 Cht6 cno eIF-4B Elf eRF1 fray h key Lpin Mlh1 mth Prat rad50 r-l scra Sep4 SF1 Sirt4 Smc5 Spc105R Tif-IA trio Vha100-1
 #Genes with nonsense:
-4EHP    Aats-ile        AcCoAS  Ada2b   Alh     alpha-Est3      Atg18   Btk29A  Camta   CAP     cert    CG10077 CG10082 CG1021  CG10286 CG1041  CG10494 CG11120 CG11127 CG11255 CG1234  CG13124 CG13185 CG13957 CG14043 CG14135 CG14805 CG14967 CG14997 CG15279 CG15784 CG16972 CG17359 CG18135 CG2051  CG2698  CG3033  CG30484 CG31145 CG31431 CG31548 CG31731 CG3251  CG32626 CG32732 CG3323  CG34349 TODO: CG40378 CG4159  CG42668 CG42672 CG42708 CG43154 CG4433  CG4797  CG5059  CG5613  CG5728  CG9674  cher    Cht6    cnn     cno     CTPsyn  cv-c    Cyp6a20 Dbp73D  dl      drongo  Ect4    NSprob(TODO): eIF-4B  Elf     eRF1    Esyt2   fd68A   fon     (TWO): fray    h   Hexo2   Hsp70Aa Hsp70Bb Hsp70Bc ImpL2   key     kuk     kz      l_1_G0196       l_1_G0222       l_2_k01209      Lmpt    Lpin    mei-218 Mlh1    mnd     mth     Nhe2    Nmd3    Nmda1   Pdp1    Pfk     Prat    r       rad50   Rad51D  Rfx     rhea    (NS): rhi     rictor  r-l     row     Sam-S   scny    scra    sec31   Sep4    SF1     sgg     Sgs1    shi     Sirt4   slgA    Smc5    SNF4Agamma      Snp     Spc105R SPoCk   spri    srp     TER94   thoc5   Tif-IA  Tor     trio    Ulp1    ush     Vha100-1        whd     wun     Wwox    Zasp52
+4EHP borr CG10286 CG11120 CG11127 CG11180 CG13185 CG13957 CG14043 CG14135 CG14967 CG14997 CG16972 CG1718 CG17359 CG18135 CG2051 CG30484 CG31145 CG31431 CG31548 CG3251 CG32732 CG3323 CG40378 CG42672 CG5613 CG5728 CG8478 Cht6 Cyp6a20 Dbp73D drongo eIF-4B eRF1 fab1 fon fray fs_1_K10 Hexo2 hppy Hsp70Aa ImpL2 kuk kz mei-218 Nmd3 Nopp140 Pfk r Rad51D rhi r-l sec31 Sgs1 SPoCk spri srp thoc5 tmod TMS1 Top1 Tor Ulp1 whd wun Wwox
 
 while read -r p
 do
     eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
     rm ~/db/DGRP/yakgenes/$GENE\.yak.div
-    rm ~/db/DGRP/yakgenes/$GENE\.out
+   # rm ~/db/DGRP/yakgenes/$GENE\.out
 
 done < ~/code/NONtargets

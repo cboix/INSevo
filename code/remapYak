@@ -8,24 +8,25 @@ CDS=$PREFIX/db/Annotation/cds-r5.33
 
 #For running parallel jobs:
 if [ "$1" == "" ]
-then
+then {
     TARGETS=$PREFIX/project/dmel_targets
     ydiv=$PREFIX/project/divergence/cd.yak.div
-elif [ "$1" == "CONTROL" ]
-then
+    GFEXPDB=$PREFIX/project/GFexpyak
+} elif [ "$1" == "CONTROL" ]
+then {
     TARGETS=$PREFIX/project/random_targets
     ydiv=$PREFIX/project/divergence/cd.yak.control.div
-else
+    GFEXPDB=$PREFIX/project/GFexpyakcon
+} else {
     TARGETS=$1
-fi
+} fi
 
 #Necessary directories
 mkdir -p $YAKDIR
 
 if [[ ! -s $CDS ]] 
-then { awk '$2 ~ /FlyBase/ && $3 ~ /CDS/{gsub(";"," ",$0);  gsub("Name="," ",$0); gsub("Name=","n;",$0); gsub(":"," ",$0); print $1,$3,$4,$5,$10,$11,$7}' $PREFIX/db/Annotation/dmel-all-r5.51.gff | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); gsub("[0-9]+_","",$5); print $0}' > $CDS 
+then { awk '$2 ~ /FlyBase/ && $3 ~ /CDS/{gsub(";"," ",$0);  gsub("Name="," ",$0); gsub("Name=","n;",$0); gsub("FBtr"," "); gsub(":"," ",$0); gsub(", ",","); print $1,$3,$4,$5,$10,$11,$7,$13}' $PREFIX/db/Annotation/dmel-all-r5.51.gff |  awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); gsub("[0-9]+_","",$5); gsub(","," "); print $0}' | awk '{for(i=8;i<=NF;i++){print $1,$2,$3,$4,$i,$6,$7,$5}}' > $CDS 
 } fi
-    # TODO the problem is IF I REMOVE chr_random then I will have gaps! and GFEXP will be off... (not by that much though. only one occurrence, in the exponential dist).
     # TODO edit so that if $5 == 2, (in python) then a path finding function is made and a synonymous path is made.
 #---------------------------------------------------------------------------#
 while read -r p
@@ -39,7 +40,21 @@ do
     then {
         
         #Get the longest transcript's number (to extract longest CDS):
-        awk -v cds=$cds '$6 == cds' $CDS | sort -nk 5 | awk '{if(b != $5){printf("%s %s\n",a,b); a=0; b=$5} a=a+$4-$3+1}END{printf("%s %s\n",a,b)}' | awk 'NR != 1' | sort -n > .$GENE\.cds
+        awk -v cds=$cds '$6 == cds' $CDS | sort -nk 5 > .$GENE\.cds
+
+        #Evaluate whether any transcripts are bad! This is particularly important if we have any sort of mismatch problems:
+        awk '{if(b ==$5 && (d == $4 || c == $3)){print $5}; b= $5; c=$3; d=$4}' .$GENE\.cds | sort -u > .$GENE\.tmp
+        while read -r transcript
+        do
+            eval $( echo $transcript | awk '{printf("TRS=%s",$1)}' )
+            awk -v tr=$TRS '$5 != tr' .$GENE\.cds > .$GENE\tmp3
+            cat .$GENE\tmp3 > .$GENE\.cds
+        done < .$GENE\.tmp
+        
+        awk '{if(b != $5){printf("%s %s\n",a,b); a=0; b=$5} a=a+$4-$3+1}END{printf("%s %s\n",a,b)}' .$GENE\.cds | awk 'NR != 1' | sort -n > .$GENE\tmp3
+        cat .$GENE\tmp3 > .$GENE\.cds
+        rm .$GENE\tmp3
+
         CC=0
         #Loops if the TR does NOT contain a suitable gene:
     while [ $CC -ne 1 ]
@@ -48,6 +63,8 @@ do
 
         # Generate bed files to be used in the liftOver work: # Put together the CDS and EXPAND it:
         awk -v gene=$GENE -v tr=$TR '$6 ~ gene && $5 == tr' $CDS | sort -u > $BED 
+
+
         #A warning!
         awk -v st=$ST -v en=$EN 'END{if(st > en){print "start is above end"}}' $BED
         eval $( awk 'NR==1{printf("DCT=%s",$7)}' $BED )
@@ -137,19 +154,19 @@ echo "Assessing randomness of the SNP positions"; echo "" > $PREFIX/project/GFEx
 while read -r p
 do
     eval $( echo $p | awk '{printf("GENE=%s",$1)}' )
-    echo "Computing Goodness of Fit for $GENE:"
-    LENGTH=$( awk 'END{print NR}' $PREFIX/project/divergence/$GENE\.cd.sim )
-
-    sort -u $YAKDIR/$GENE\.out | sort -nk 4 | awk 'BEGIN{a=0}$0 ~ /SY/{print $4-a; a=$4}' > $YAKDIR/$GENE\.sy.dist
-    sort -u $YAKDIR/$GENE\.out | sort -nk 4 | awk 'BEGIN{a=0}$0 ~ /NS/{print $4-a; a=$4}' > $YAKDIR/$GENE\.ns.dist
-
-    # Run R command to process this:
-    if [[ "$1" == "CONTROL" ]] 
+    YAKout=$YAKDIR/$GENE\.out
+    NONSENSE=$( grep NONSENSE $YAKout | awk 'END{print NR}' )
+    if [[ "$NONSENSE" == "0" ]] 
     then {
-        #TODO for controls: (it should work already, because files are in same directory, just getting piped differently)
-    R --slave -f $PREFIX/code/GFexp.R --args $LENGTH $PREFIX $GENE ycon >> $PREFIX/project/GFexpyakcon
-    } else {
-    R --slave -f $PREFIX/code/GFexp.R --args $LENGTH $PREFIX $GENE yak >> $PREFIX/project/GFExpyak
+ 
+	    echo "Computing Goodness of Fit for $GENE:"
+	    LENGTH=$( awk 'END{print NR}' $PREFIX/project/divergence/$GENE\.cd.sim )
+	    sort -u $YAKout | sort -nk 4 | awk 'BEGIN{a=0}$0 ~ /SY/{print $4-a; a=$4}' > $YAKDIR/$GENE\.sy.dist
+	    sort -u $YAKout | sort -nk 4 | awk 'BEGIN{a=0}$0 ~ /NS/{print $4-a; a=$4}' > $YAKDIR/$GENE\.ns.dist
+
+	    # Run R command to process this:
+	    #TODO for controls: (it should work already, because files are in same directory, just getting piped differently)
+	    R --slave -f $PREFIX/code/GFexp.R --args $LENGTH $PREFIX $GENE yak >> $GFEXPDB
     } fi
 
 done < $TARGETS

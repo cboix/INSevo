@@ -2,8 +2,15 @@
 PREFIX='/net/home/carlesba' #Take from arguments in bash.
 CDorNC='cd' #another argument that can be taken in bash.
 REFRESH=True #canonically false, but can be overwritten. THIS whole section should be parsed as args.
+targets= PREFIX + '/project/dmel_targets'
 
 import os.path
+import sys
+# Must run script on its own / w/out "python"
+if (len(sys.argv) > 1):
+    PREFIX = sys.argv[1]
+    targets = sys.argv[2]
+    CDorNC= sys.argv[3]
 
 # Be sure to run w/ python2.6 (v2.6.5) instead of python (which is python v2.4.3)
 bases = ['t', 'c', 'a', 'g']
@@ -40,9 +47,7 @@ def genecomp(gene,prefix,cdnc,refresh):
 		            out.write(code)
 
 # Loop over all gene targets
-targets= PREFIX + '/project/dmel_targets'
 with open(targets,'r') as tar:
     for geneline in tar:
         g = geneline.split(" ")
-        genecomp(g[0],PREFIX,'cd',REFRESH)
-        genecomp(g[0],PREFIX,'nc',REFRESH)
+        genecomp(g[0],PREFIX,CDorNC,REFRESH)

@@ -1,17 +1,21 @@
 #!/bin/bash
 # Variables:
 PREFIX=/net/home/carlesba
-div=$PREFIX/project/divergence/DGRPdiv
 fidx=$PREFIX/db/DGRP/fidx.vcf
 fvcf=$PREFIX/db/DGRP/f.vcf
 
 #For running parallel jobs:
 if [ "$1" == "" ]
-then
+then {
     TARGETS=$PREFIX/project/dmel_targets
-else
+    div=$PREFIX/project/divergence/DGRPdiv
+} elif [ "$1" == "CONTROL" ] 
+then {
+    TARGETS=$PREFIX/project/random_targets
+    div=$PREFIX/project/divergence/DGRPdivcontrol
+} else {
     TARGETS=$1
-fi
+} fi
 
 # Folders:
 mkdir -p $PREFIX/db/DGRP
@@ -74,36 +78,36 @@ then {
 
     done < $TARGETS
     echo "Done creating SNP files for both MK testing and Tajima's D."
-}
-fi
+} fi
 
-#CAN'T merge if not sorted:
-sort -u $div | sort +0 -1 > $PREFIX/project/tmp
-cat $PREFIX/project/tmp > $div
-rm $PREFIX/project/tmp
-
-# Put together coding seq if it doesn't exist:
-UTR=$PREFIX/db/Annotation/utr-r5.33
-
-if [[ ! -s $UTR ]]
-then { awk '$2 ~ /FlyBase/ && $3 ~ /UTR/{gsub(";"," ",$0); gsub("Name="," ",$0); gsub("Name=","n;",$0); print $1,$3,$4,$5,$10}'  $PREFIX/db/Annotation/dmel-all-r5.33.gff | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > $UTR
-    }
-fi
-
-#NEEDED to compare the simulans divergences with the DGRP divergences.
-while read -r p
-do
-    eval $( echo $p | awk '{printf("GENE=%s;",$1)}' )
-    INutr=$PREFIX/db/DGRP/indexedgenes/$GENE\_idx.vcf
-    OUTutr=$PREFIX/db/DGRP/indexedgenes/$GENE\_num
-
-    if [[ ! -s $OUTutr ]]
-    then {
-        eval $( awk -v gene=$GENE '$5 ~ gene' $UTR | sort -u | awk '{a=(a?(a<$3?a:$3):$3); a=(a?(a<$4?a:$4):$4); b=(b?(b>$3?b:$3):$3); b=(b?(b>$4?b:$4):$4);}END{printf("ST=%s; EN=%s;",a,b)}' )
-        #Work from idx.vcf! and create small list of numbers.
-        awk -v st=$ST -v end=$EN '$0 ~ /SY/ || $0 ~ /NS/{a = $3 - st + 1; print $2,a,$4}' $INutr > $OUTutr
-    } fi
-
-done < $TARGETS
-
-
+if [[ "$1" == "" || "$1" == "CONTROL" ]]
+then {
+    #CAN'T merge if not sorted:
+    sort -u $div | sort +0 -1 > $PREFIX/project/tmp
+    cat $PREFIX/project/tmp > $div
+    rm $PREFIX/project/tmp
+} fi
+# WE CAN ACTUALLY NOW do this directly to the yakuba genes!
+## Put together coding seq if it doesn't exist:
+#UTR=$PREFIX/db/Annotation/utr-r5.33
+#
+#if [[ ! -s $UTR ]]
+#then { awk '$2 ~ /FlyBase/ && $3 ~ /UTR/{gsub(";"," ",$0); gsub("Name="," ",$0); gsub("Name=","n;",$0); print $1,$3,$4,$5,$10}'  $PREFIX/db/Annotation/dmel-all-r5.33.gff | awk '{gsub(/\(/,"_",$0); gsub(/\)/,"_",$0); print $0}' > $UTR
+#    }
+#fi
+#
+##NEEDED to compare the simulans divergences with the DGRP divergences.
+#while read -r p
+#do
+#    eval $( echo $p | awk '{printf("GENE=%s;",$1)}' )
+#    INutr=$PREFIX/db/DGRP/indexedgenes/$GENE\_idx.vcf
+#    OUTutr=$PREFIX/db/DGRP/indexedgenes/$GENE\_num
+#
+#    if [[ ! -s $OUTutr ]]
+#    then {
+#        eval $( awk -v gene=$GENE '$5 ~ gene' $UTR | sort -u | awk '{a=(a?(a<$3?a:$3):$3); a=(a?(a<$4?a:$4):$4); b=(b?(b>$3?b:$3):$3); b=(b?(b>$4?b:$4):$4);}END{printf("ST=%s; EN=%s;",a,b)}' )
+#        #Work from idx.vcf! and create small list of numbers.
+#        awk -v st=$ST -v end=$EN '$0 ~ /SY/ || $0 ~ /NS/{a = $3 - st + 1; print $2,a,$4}' $INutr > $OUTutr
+#    } fi
+#
+#done < $TARGETS
