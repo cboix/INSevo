@@ -63,16 +63,16 @@ then {
 
             # Create the full file by cutting out relevant parts w/ sed. Also trim out the . and replace w/ 0s.
             sed -n "$Start"','"$End"'p;' $fvcf | awk '{gsub(/[A-Z]*:[0-9:A-Z]*:[A-Z]*/,"\t",$0); gsub(/[0-9]*\//,"",$0); print}' | awk ' $0 ~/SY/{print "0",$0} $0 ~/NS/{print "1",$0}' | tr . 0 > $tmpSNP
-	       
-	        # Create SNP data (to be used by Tajima's D test):
-	        awk '{print $3}'  $tmpSNP | sort | uniq -c | join -1 2 -2 3 - $tmpSNP | awk '{printf("%s %s %s %s %s %s %s %s %s",$3,$4,$1,$5,$6,$7,$8,$9,$10); for(i=11;i <=NF; i++){a=(i%2==0?$i:$i/$2);printf(" %s",a);} printf("\n",2);}' > $SNP
-	
-	        # Count SNPs for the divSNP files:
-	        awk '{qual= 0;count=0;no = 0;allele=0; for(i=10;i <=NF; i= i+2){a = i+1; if($i ~ /\./ || $a < 20){no = no +1}; if(($i == 1 || $i == 0) && $a >= 20){count=count+1;qual = qual + $a}; if($i > 0 && $a >= 20){allele = allele + $i;}}; print allele,qual/count,count,no,no+count,$9;}' $SNP > $divSNP
-	
+           
+            # Create SNP data (to be used by Tajima's D test):
+            awk '{print $3}'  $tmpSNP | sort | uniq -c | join -1 2 -2 3 - $tmpSNP | awk '{printf("%s %s %s %s %s %s %s %s %s",$3,$4,$1,$5,$6,$7,$8,$9,$10); for(i=11;i <=NF; i++){a=(i%2==0?$i:$i/$2);printf(" %s",a);} printf("\n",2);}' > $SNP
+    
+            # Count SNPs for the divSNP files:
+            awk '{qual= 0;count=0;no = 0;allele=0; for(i=10;i <=NF; i= i+2){a = i+1; if($i ~ /\./ || $a < 20){no = no +1}; if(($i == 1 || $i == 0) && $a >= 20){count=count+1;qual = qual + $a}; if($i > 0 && $a >= 20){allele = allele + $i;}}; print allele,qual/count,count,no,no+count,$9;}' $SNP > $divSNP
+    
     } fi
-	        # Counts of all divergence data. Is done regardless of DOALL value:
-	        awk -v gene=$GENE 'BEGIN{sy=0;ns=0;} $0 ~ /SY/{sy=sy+1}$0 ~/NS/{ns=ns+1}END{print gene,sy,ns }' $divSNP >> $div
+            # Counts of all divergence data. Is done regardless of DOALL value:
+            awk -v gene=$GENE 'BEGIN{sy=0;ns=0;} $0 ~ /SY/{sy=sy+1}$0 ~/NS/{ns=ns+1}END{print gene,sy,ns }' $divSNP >> $div
 
     rm -f $tmpSNP
 
@@ -87,6 +87,8 @@ then {
     cat $PREFIX/project/tmp > $div
     rm $PREFIX/project/tmp
 } fi
+
+# TODO put together the non-coding sequence!
 # WE CAN ACTUALLY NOW do this directly to the yakuba genes!
 ## Put together coding seq if it doesn't exist:
 #UTR=$PREFIX/db/Annotation/utr-r5.33

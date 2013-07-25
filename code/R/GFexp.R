@@ -17,7 +17,7 @@ if (species == 'yak'){
 }
 
 # We require at least the SY file.... otherwise it might not be very useful.
-if (file.info(filenameSY)$size == 0){
+if (file.info(filenameSY)$size == 0 && file.info(filenameNS)$size == 0){
 
 out <- paste(gene,"EMPTY",sep=" ")
 cat(out)
@@ -134,23 +134,23 @@ cat("\n")
 #SIMULATION for path method
 if (FALSE){
     N <- 5000
-	BernouilliProcess <- function(k,lambda){
-	    n <- c()
-	    while(sum(n) < k){
-	        if(lambda > runif(1)){
-	            n <- c(n,1)
-	        } else { n <- c(n,0) }
-	    }
-	    return(n)
-	}
+    BernouilliProcess <- function(k,lambda){
+        n <- c()
+        while(sum(n) < k){
+            if(lambda > runif(1)){
+                n <- c(n,1)
+            } else { n <- c(n,0) }
+        }
+        return(n)
+    }
     # Over 1500 nucleotides (similar numbers to Akt1):
     simpath <- function(length,occ,type){
         #TODO SIMULATE BY POISSON PROCESS to keep length
-	    #gene <- rpois(length,occ/length)
+        #gene <- rpois(length,occ/length)
         gene <- BernouilliProcess(occ,occ/length)
-	    idx <- (1:length(gene))*(gene != 0)
-	    idx <- idx[(idx != 0)]
-	    dist <- c(idx[1],diff(idx))
+        idx <- (1:length(gene))*(gene != 0)
+        idx <- idx[(idx != 0)]
+        dist <- c(idx[1],diff(idx))
         #curvature, or path:
         if(type == 'c'){return(curvature(dist))}
         if(type == 'a'){return(path(dist))}

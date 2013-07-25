@@ -33,6 +33,7 @@ do
     eval $( echo $p | awk -v pref=$PREFIX '{printf("sed -n \"%sp\" a >> %s/project/randomgenes",$1,pref)}' )
 done < $PREFIX/project/randomnum
 
+#once the randomgenes are done:
     sort +0 -1 $PREFIX/project/randomgenes | join - c | awk '{name=$1; gsub(/\(/,"_",$1); gsub(/\)/,"_",$1); gsub(/\x27/,"_",$1); gsub(/:/,"_",$1); print $0,($5-$4+1),name}' > $PREFIX/project/random_targets
     mkdir -p $PREFIX/project/random
     awk -v prefix=$PREFIX '{len=((NR - NR % 100)/100 + 1); print > prefix "/project/random/" int(len) "random_targets"}' $PREFIX/project/random_targets
