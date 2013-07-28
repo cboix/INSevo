@@ -1,9 +1,16 @@
 #!/usr/bin/python2.6
-PREFIX='/net/home/carlesba' #Take from arguments in bash.
 REFRESH=True #canonically false, but can be overwritten. THIS whole section should be parsed as args.
-targets= PREFIX + '/project/dmel_targets'
+DIRECTORY='/net/home/carlesba/db/SSeq/enhancers/'
+TARGETS= '/net/home/carlesba/project/dmel_targets'
 
+import os.path
+import sys
 from math import exp
+
+# Must run script on its own / w/out "python"
+if (len(sys.argv) > 1):
+    DIRECTORY = sys.argv[1]
+    TARGETS = sys.argv[2]
 
 def read_motif_table(lines):
     header=lines[0].split("_")[:-1]
@@ -33,6 +40,7 @@ def read_PWMs(filename):
 
 def compare_motif(lines,pwm,consensus,threshold):
     #Could make this more efficient by cutting off a threshold earlier
+    #Another idea to make this more efficient would be to have a matrix (length *4) which you can multiply against the pwms.
     value=0
     breaker=0
     n=0
@@ -44,8 +52,13 @@ def compare_motif(lines,pwm,consensus,threshold):
         #if not continuous, break!
         if abs(this - last) > 1:
             breaker=1
+            break
         #Compare the dmelanogaster sequence only.
         value = value + float(pwm[line[0].upper()][n])
+        # THIS can be adjusted.
+        if value < -3:
+            breaker=1
+            break
         last = this
         end = line[2]
         n=n+1
@@ -84,15 +97,11 @@ def find_motifs(filename,pwm,threshold):
     return(matches)
 
 
-PWM = read_PWMs('/home/carles/Labwork/StarrSeq/PWMs')
 
-#For testing purposes:
-PWM2=PWM[:100]
-
-def compute_file(filename):
+def compute_file(filename,PWM,threshold):
     motifs = []
-    for pwm in PWM2:
-        out = find_motifs(filename,pwm,0.25)
+    for pwm in PWM:
+        out = find_motifs(filename,pwm,threshold)
         motifs.append(out)
     d = []
     for m in motifs:
@@ -102,30 +111,29 @@ def compute_file(filename):
     #processing to be done here to select motif threshold. 
     return(d)
 
+def gene_compute(gene,directory,refresh):
+    namein = directory + gene + '.yak.div'
+    nameout = directory + gene + '.enh'
+    # If out file exists, don't do this unless refresh.
+    if (not os.path.exists(nameout) or refresh):
+        motifs=compute_file(namein,PWM,0.25)
+        with open(nameout,'a') as out:
+            for m in motifs:
+                outline = m['start'] + " " + m['end'] + " " + str(m['occ']) + "\n"
+                out.write(outline)
+
+PWM = read_PWMs('/home/carles/Labwork/StarrSeq/PWMs')
+
+# Loop over all gene targets and compute the enhancer searches for all:
+with open(TARGETS,'r') as tar:
+    for geneline in tar:
+        g = geneline.split(" ")
+        gene_compute(g[0],DIRECTORY,REFRESH)
 
 
 #To test:
-motif=find_motifs('/home/carles/Labwork/StarrSeq/cbt.yak.div',pwm,0.25)
-
-motifs=compute_file('/home/carles/Labwork/StarrSeq/cbt.yak.div')
-
-
-with open('/home/carles/Labwork/StarrSeq/cbt.enh','a') as out:
-    for m in motifs:
-        outline = m['start'] + " " + m['end'] + " " + m['position'] + " " + str(m['occ']) + " " + m['peaksep'] + "\n"
-        out.write(outline)
-
-
-dG=[]
-for m in motif:
-    if m != 0:
-        dG.append(m['occ'])
-
-
-occ=[]
-for m in dG:
-    occ.append(1/(1 + math.exp(consensus-m)))
-
-
-        dG.append(1/(1+math.exp(m['v'])))
-
+# pwm=PWM[1]
+# motif=find_motifs('/home/carles/Labwork/StarrSeq/cbt.yak.div',pwm,0.25)
+start = time.time()
+motifs=compute_file('/home/carles/Labwork/StarrSeq/cbt.yak.div',PWM,0.25)
+elapsed = time.time() - start
