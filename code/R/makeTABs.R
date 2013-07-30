@@ -2,8 +2,8 @@
 #First line of processing, creating the tables.
 # ------------------ McDonald Test ---------------------
 MKprocess <- function(species,dTD){
-    readnameMK <- paste('MKdiv',species,sep="")
-    readnameSE <- paste('SEMKdiv',species,sep="")
+    readnameMK <- paste('MK',species,sep="")
+    readnameSE <- paste('SEMK',species,sep="")
     MK <- read.table(readnameMK)
     SE <- read.table(readnameSE)
     tab <- cbind(MK,SE[,-1])
@@ -40,5 +40,14 @@ mat <- matrix(unlist(TD),ncol=2,byrow=F)
 dTD <- data.frame(mat[,1],as.numeric(mat[,2]))
 names(dTD) <- c('Gene','TajimaD')
 
-MKprocess('yak',dTD)
-MKprocess('sim',dTD)
+TDc <- read.delim('TajimaDcontrol',header=F,sep=" ")
+matc <- matrix(unlist(TDc),ncol=2,byrow=F)
+dTDc <- data.frame(matc[,1],as.numeric(matc[,2]))
+names(dTDc) <- c('Gene','TajimaD')
+
+
+MKprocess('yakfulldiv',dTD)
+MKprocess('simfulldiv',dTD)
+MKprocess('yakfulldivcontrol',dTD)
+MKprocess('simfulldivcontrol',dTD)
+

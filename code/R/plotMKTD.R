@@ -2,8 +2,15 @@
 # -------------------- Tajima's D Test--------------------
 TD <- read.delim('TajimaD',header=F,sep=" ")
 mat <- matrix(unlist(TD),ncol=2,byrow=F)
-dTD <- data.frame(mat[,1],as.numeric(mat[,2]))
-names(dTD) <- c('Gene','TajimaD')
+dTD <- data.frame(mat[,1],as.numeric(mat[,2]),'Insulin')
+names(dTD) <- c('Gene','TajimaD','Set')
+
+TDc <- read.delim('TajimaDcontrol',header=F,sep=" ")
+matc <- matrix(unlist(TDc),ncol=2,byrow=F)
+dTDc <- data.frame(matc[,1],as.numeric(matc[,2]),'Control')
+names(dTDc) <- c('Gene','TajimaD','Set')
+
+
 
 library(ggplot2)
 png('~/Labwork/Rwork/TajimaD.png',height=1200,width=1200)

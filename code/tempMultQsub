@@ -24,6 +24,16 @@ for i in range(1,14):
     string = "qsub -clear -cwd -N rdsim" + str(i) + " -b y ~/code/parseSIMV2 ~/project/random/" +str(i)+"random_targets"
     print(string) 
 
+#ENHANCERS:
+for i in range(1,14):
+    string = "qsub -clear -cwd -N ENH" + str(i) + " -b y ~/code/parseEnh ~/project/genes/" +str(i)+"dmel_targets"
+    print(string) 
+
+for i in range(1,14):
+    string = "qsub -clear -cwd -N rdENH" + str(i) + " -b y ~/code/parseEnh ~/project/random/" +str(i)+"random_targets"
+    print(string) 
+
+
 
 #AFTER this, we run: 
 qsub -clear -cwd -N DGRP -b y ~/code/parseDGRP 
