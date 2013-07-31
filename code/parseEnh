@@ -1,6 +1,5 @@
 #!/bin/bash
-#CREATES the Yakuba remapping from flybase annotation and liftOver files.
-#In format chr, _, type, pos1,pos2, _,_,_,Dmel=FBgn####:FBtr#######etc
+#CREATES the Yakuba mapping of enhancers from the StarrSeq database.
 PREFIX=/net/home/carlesba
 SSEQ=$PREFIX/db/SSeq ENHDIR=$PREFIX/db/SSeq/enhancers
 FULLGENES=$PREFIX/db/DGRP/fullgenes
@@ -10,11 +9,13 @@ INT=$PREFIX/db/Annotation/int-r5.51
 if [ "$1" == "" ]
 then {
     TARGETS=$PREFIX/project/dmel_targets
-    ENHdiv=$PREFIX/project/divergence/ENH.yak.div
+    ENdiv=$PREFIX/project/divergence/ENH.yak.div
+    INSM=$SSEQ/InsulinMotifs
 } elif [ "$1" == "CONTROL" ]
 then {
     TARGETS=$PREFIX/project/random_targets
-    ENHdiv=$PREFIX/project/divergence/ENH.yak.control.div
+    ENdiv=$PREFIX/project/divergence/ENH.yak.control.div
+    INSM=$SSEQ/InsulinMotifsControl
 } else {
     TARGETS=$1
 } fi
@@ -22,7 +23,6 @@ then {
 if [[ ! -e $INT ]]
 then { awk '$2 ~ /FlyBase/ && $3 ~ /intron/{gsub(";"," ",$0);  gsub("Name="," ",$0); gsub("Name=","n;",$0); gsub("FBtr"," "); gsub(":"," ",$0); gsub(", ",","); print $1,$4,$5,$7,$12}' $PREFIX/db/Annotation/dmel-all-r5.51.gff | sort -u > $INT
 } fi
- 
 
 #Necessary directories
 mkdir -p $ENHDIR
@@ -34,7 +34,7 @@ do
     NET=$ENHDIR/$GENE\.net
     CHUNKS=$ENHDIR/$GENE\.chunks
     int=$GENE-in
-if [[ ! -e $NET ]] 
+if [[ ! -s $NET ]] 
 then { 
 
     #Clear file first
@@ -79,7 +79,7 @@ do
     ENHdiv=$ENHDIR/$GENE\.yak.div
     eval $( awk 'NR==1{printf("DCT=%s",$7)}' $NET )
 
-    if [[ -s $NET && ! -s $ENHdiv ]] 
+    if [[ -s $NET && ! -e $ENHdiv ]] 
     then { 
 
     rm -f $ENHbed
@@ -103,7 +103,6 @@ do
         done < .$GENE\tmp
         rm .$GENE\tmp
     done < $NET
-
         sort -nk3 $ENHbed | awk 'BEGIN{i=0}{b=sprintf("%s %s %s",$1,$2,$3); if(b == c){if(int(f4) > int($4)){a[i]=$0}}else{i=i+1;a[i]=$0}; c=b; f4=$4}END{for(j=1;j<=i;j++){print a[j]}}' | awk -v dc=$DCT 'BEGIN{split("",a)}{b=$0; if(dc ~ /-/){f1=($1 ~/C/?"G":($1~/G/?"C":($1~/A/?"T":($1~/T/?"A":($1 ~/c/?"g":($1~/g/?"c":($1~/a/?"t":($1~/t/?"a":"N")))))))); f2=($2 ~/C/?"G":($2~/G/?"C":($2~/A/?"T":($2~/T/?"A":($2 ~/c/?"g":($2~/g/?"c":($2~/a/?"t":($2~/t/?"a":"N")))))))); b=sprintf("%s %s %s %s %s %s",f1,f2,$3,$4,$5,$6);}a[NR]=b}END{for(i=1; i <=NR; i++){out=(dc~/+/?a[i]:a[NR-i+1]); print out}}' > $ENHdiv
     } fi
 done < $TARGETS
@@ -117,26 +116,67 @@ $PREFIX/code/motifScan.py $ENHDIR $TARGETS
 echo "Annotating divergence file:"
 $PREFIX/code/enhComp.py $ENHDIR $TARGETS
 
-
 #Compile, in the most standard way, the ns/sy mutations:
 if [[ "$1" == "" || "$1" == "CONTROL" ]] 
 then { 
-    rm -f $ENHdiv
+# Clear files:
+    rm -f $INSM
+    rm -f $ENdiv
     while read -r p
     do
         eval $( echo $p | awk '{printf("GENE=%s",$1)}' ) 
         ENOUT=$ENHDIR/$GENE\.out 
         ENH=$ENHDIR/$GENE\.enh
-        eval $( awk 'END{print("LNR=%s",NR)}' $ENH )
+        ENBED=$ENHDIR/$GENE\_yak.bed
+        LNR=0
+        eval $( awk 'END{printf("LNR=%s",NR)}' $ENH )
 
+        #condition if empty?
+        if [[ -s $ENOUT ]] 
+        then {
         echo "$GENE to div file"
-        sort -u $ENOUT | awk -v gene=$GENE -v lnr=$LNR 'BEGIN{sy=0;ns=0}$0 ~ /SY/{sy=sy+1}$0 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy,lnr}' >> $ENHdiv
-
+        LENB=0
+        eval $( awk 'END{printf("LENB=%s",NR)}' $ENBED )
+        sort -u $ENOUT | awk -v gene=$GENE -v lnr=$LNR -v len=$LENB 'BEGIN{sy=0;ns=0}$0 ~ /SY/{sy=sy+1}$0 ~ /NS/{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy,lnr,len}' >> $ENdiv
+    } else {
+    echo "$GENE 0 0 0 $LNR" >> $ENdiv
+    } fi
+        cat $ENH >> $INSM
     done < $TARGETS
 
-    sort -u $ENHdiv > .tmp
-    cat .tmp > $ENHdiv
+    sort -u $ENdiv > .tmp
+    cat .tmp > $ENdiv
     rm -f .tmp
+
+    #Separate by top 10 motifs:
+    awk '{gsub(">","",$0); print $NF}' $INSM | sort | uniq -c | sort -rn | head -n 10 > $INSM\.top
+
+mkdir -p $SSEQ/Motif
+while read -r line
+do
+        eval $( echo $line | awk '{printf("MOTIF=%s",$2)}' )
+        OUTmot=$SSEQ/Motif/$MOTIF\.div
+
+        while read -r p 
+        do 
+            eval $( echo $p | awk '{printf("GENE=%s",$1)}' ) 
+            LNR=0
+            ENOUT=$ENHDIR/$GENE\.out 
+            ENH=$ENHDIR/$GENE\.enh
+            ENBED=$ENHDIR/$GENE\_yak.bed
+            eval $( awk -v mot=$MOTIF 'BEGIN{a=0}$0 ~ mot{a=a+1}END{printf("LNR=%s",a)}' $ENH )
+            if [[ -s $ENOUT ]] 
+            then {
+                LENB=0 
+                eval $( wc $ENBED | awk '{printf("LENB=%s",$1)}' )
+                sort -u $ENOUT | awk -v gene=$GENE -v lnr=$LNR -v mot=$MOTIF -v len=$LENB 'BEGIN{ns=0;sy=0;}$0 ~ /SY/{sy=sy+1}$0 ~ mot{ns=(ns?ns+1:1);}END{print gene,sy,ns,ns+sy,lnr,len}' >> $OUTmot
+            } fi
+        done < $TARGETS
+
+        sort -u $OUTmot > .$MOTIF\.tmp
+        cat .$MOTIF\.tmp > $OUTmot
+        rm -f .$MOTIF\.tmp
+done < $INSM\.top
 
 } fi
 

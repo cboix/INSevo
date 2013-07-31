@@ -16,6 +16,7 @@ ggplot(MERGETD,aes(non,TajimaD)) + geom_boxplot()
 
 species <- 'yak'
 createPFAM <- function(species,PFAM){
+
     TDMK <- read.table(paste('~/Labwork/Rwork/TDMKtab.',species,sep=""))
     MERGEPFAM <- merge(PFAM,TDMK)
     non <- 1*(MERGEPFAM$Clan.Desc == 'None')

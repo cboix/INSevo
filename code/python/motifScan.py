@@ -13,9 +13,11 @@ if (len(sys.argv) > 1):
     TARGETS = sys.argv[2]
 
 def read_motif_table(lines):
-    header=lines[0].split("_")[:-1]
+    first=lines[0].split("\n")[0]
+    header=first.split("_")
     gene=header[0].split(">")
-    d = dict(gene=gene[1])
+    fbgn=header[-1]
+    d = dict(gene=gene[1],fbgn=fbgn,iden=first)
     for line in lines[1:5]:
         proc=line.split("\t")[:-1]
         name=proc[0].split(" ")[0]
@@ -25,22 +27,32 @@ def read_motif_table(lines):
     return(d)
 
 #CREATION of the motif dictionaries:
-def read_PWMs(filename):
+def read_PWMs(filename,S2expressed):
+    with open(S2expressed,'r') as S2in:
+        S2EX=[]
+        names=[]
+        for line in S2in:
+            line = line.split("\n")[0]
+            line = line.split(" ")
+            S2EX.append(dict(name=line[0],fpkm=float(line[1])))
+            names.append(line[0])
     with open(filename,'r') as infile:
         PWM=[]
         lines = []
         for line in infile:
             lines.append(line)
             if len(lines) >= 5:
-                PWM.append(read_motif_table(lines))
+                dic = read_motif_table(lines)
+                if any(dic['fbgn'] in s for s in names):
+                    PWM.append(dic)
                 lines = []
         if len(lines) > 0:
             print('something left!')
         return(PWM)
 
 def compare_motif(lines,pwm,consensus,threshold):
-    #Could make this more efficient by cutting off a threshold earlier
-    #Another idea to make this more efficient would be to have a matrix (length *4) which you can multiply against the pwms.
+    # Could make this more efficient by cutting off a threshold earlier
+    # To make this more efficient would be to have a matrix (length *4) which you can multiply against the pwm
     value=0
     breaker=0
     n=0
@@ -55,8 +67,8 @@ def compare_motif(lines,pwm,consensus,threshold):
             break
         #Compare the dmelanogaster sequence only.
         value = value + float(pwm[line[0].upper()][n])
-        # THIS can be adjusted.
-        if value < -3:
+        # This can and should be adjusted.
+        if value < -6:
             breaker=1
             break
         last = this
@@ -64,7 +76,7 @@ def compare_motif(lines,pwm,consensus,threshold):
         n=n+1
     o = 1/(1+exp(consensus - value))
     if (o >= threshold):
-        d = dict(start=header[2],end=end,position=header[4],peaksep=header[3],v=value,occ=o,pwm=pwm['gene'])
+        d = dict(start=header[2],end=end,position=header[4],peaksep=header[3],v=value,occ=o,pwm=pwm['gene'],iden=pwm['iden'])
         if breaker==0: 
             return(d)
         else:
@@ -84,12 +96,12 @@ def find_motifs(filename,pwm,threshold):
             lines.append(line)
             if len(lines) == pwm['length']:
                 motif.append(compare_motif(lines,pwm,consensus,threshold))
-                #output score, and the start point -- so that I can plot them?
-                #append to list of dictionary and then select a threshold
-                #and here get rid of the earliest line:
+                #Output score, and the start point -- so that I can plot them?
+                #Append to list of dictionary and then select a threshold
+                #   and here get rid of the earliest line:
                 lines = lines[1:]
-        #select a threshold and return a certain amount of motifs.
-        #ENDS here
+        # Select a threshold and return a certain amount of motifs.
+        # ENDS here
     matches=[]
     for m in motif:
         if m != 0:
@@ -115,13 +127,13 @@ def gene_compute(gene,directory,refresh):
     if (os.path.exists(namein)):
         # If out file exists, don't do this unless refresh.
         if (not os.path.exists(nameout) or refresh):
-            motifs=compute_file(namein,PWM,0.25)
+            motifs=compute_file(namein,PWM,0.025)
             with open(nameout,'a') as out:
                 for m in motifs:
-                    outline = m['start'] + " " + m['end'] + " " + str(m['occ']) + " " + m['pwm'] + "\n"
+                    outline = m['start'] + " " + m['end'] + " " + str(m['occ']) + " " + m['pwm'] + " " + m['iden'] + "\n"
                     out.write(outline)
 
-PWM = read_PWMs('/net/home/carlesba/db/SSeq/PWMs')
+PWM = read_PWMs('/net/home/carlesba/db/SSeq/PWMs','/net/home/carlesba/db/SSeq/S2mid')
 
 # Loop over all gene targets and compute the enhancer searches for all:
 with open(TARGETS,'r') as tar:

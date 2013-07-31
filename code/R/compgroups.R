@@ -55,5 +55,7 @@ DOFE <- reshape(DOFE,idvar="Gene",direction="long",times=c('Smith and Eyre-Walke
 rownames(DOFE) <- 1:nrow(DOFE)
 
 #png('DoFEanalysis.png',width=700,height=500)
-ggplot(DOFE,aes(Group,Alpha)) + geom_point(pch=16) + geom_errorbar(aes(ymin=C1,ymax=C2),color='black',width=.1) + facet_wrap(~time)
+g1 <- ggplot(DOFE,aes(Group,Alpha)) + geom_point(pch=16) + geom_errorbar(aes(ymin=C1,ymax=C2),color='black',width=.1) + facet_wrap(~time)
 #dev.off()
+ggsave("DoFEanalysis.png",g1,width=10,height=7,dpi=1200)
+

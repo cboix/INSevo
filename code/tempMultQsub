@@ -34,7 +34,6 @@ for i in range(1,14):
     print(string) 
 
 
-
 #AFTER this, we run: 
 qsub -clear -cwd -N DGRP -b y ~/code/parseDGRP 
 qsub -clear -cwd -N DGCON -b y ~/code/parseDGRP CONTROL
@@ -42,3 +41,5 @@ qsub -clear -cwd -N sim -b y ~/code/parseSIMV2
 qsub -clear -cwd -N simCON -b y ~/code/parseSIMV2 CONTROL
 qsub -clear -cwd -N yak -b y ~/code/remapYak 
 qsub -clear -cwd -N yakCON -b y ~/code/remapYak CONTROL
+qsub -clear -cwd -N enh -b y ~/code/parseEnh
+qsub -clear -cwd -N enhCON -b y ~/code/parseEnh CONTROL

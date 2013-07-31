@@ -25,7 +25,23 @@ createGO <- function(species,ALL){
 	dd$ameans <- as.numeric(as.character(dd$ameans))
 	names(dd) <- c('Term','Mean.p.value','Alpha.median')
 	MERGEALL <- merge(MERGEALL,dd)
-	
+
+	with(MERGEALL,by(TajimaD,Term,median)) -> tmeans
+	as.numeric(as.character(tmeans)) -> tmeans
+	data.frame(cbind(levels(MERGEALL$Term),tmeans)) -> dd
+	dd$tmeans <- as.numeric(as.character(dd$tmeans))
+	names(dd) <- c('Term','TajimaD.median')
+	MERGEALL <- merge(MERGEALL,dd)
+
+
+    UP <- MERGEALL[MERGEALL$Alpha.median > -.5,]
+    DOWN <- MERGEALL[MERGEALL$Alpha.median < -1.5,]
+    cbind(UP,'High Alpha')-> UP
+    cbind(DOWN,'Low Alpha')-> DOWN
+    names(UP)[ncol(UP)] <- 'Set'
+    names(DOWN)[ncol(DOWN)] <- 'Set'
+    TWO <- rbind(UP,DOWN)
+
     name <- paste('~/Labwork/Rwork/BoxplotsMK.',species,'.png',sep="")
 	png(name,height=2000,width=800)
 	ggplot(MERGEALL,aes(reorder(Name,Alpha.median),Alpha,color=Mean.p.value)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title=paste("GO term v. MK value for ",species,sep=""),x='GO Name',y='Alpha (outliers below -20 removed)') + coord_flip() + facet_wrap(~Namespace) + scale_y_continuous(limits=c(-20,2))

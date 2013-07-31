@@ -25,8 +25,10 @@ nyak <- yak[!(yak$Gene %in% eyak$Gene),]
 eTD <- merge(expr,dTD)
 
 library(ggplot2)
-ggplot(eTD,aes(TajimaD,slopes)) + geom_point()
-ggplot(eyak,aes(Alpha,slopes)) + geom_point()
+g1 <- ggplot(eTD,aes(TajimaD,slopes)) + geom_point()
+g2 <- ggplot(eyak,aes(Alpha,slopes)) + geom_point()
+ggsave('SlopeTD.png',g1,width=4,height=4,dpi=1200)
+ggsave('SlopeAlpha.png',g2,width=4,height=4,dpi=1200)
 
 eyak$slopes < 0 -> down
 cbind(eyak,down) -> ed
@@ -61,9 +63,9 @@ cor.ex=cor(t(expr[,3:12]))
 #cor.ex[1:10, 1:30]
 d.ex=1-cor.ex
 h.ex=hclust(as.dist(d.ex))
-plot(h.tp)
+plot(h.ex)
 
-datamatrix=as.matrix(expr[,4:12]-timepart2.sig[,3])
+datamatrix=as.matrix(expr[,4:12]-expr[,3])
 #datamatrix=as.matrix(timepart2.sig[,3:11]/timepart2.sig[,2])
 
 p <-pheatmap(datamatrix, clustering_distance_rows='correlation',cluster_cols=F)
@@ -75,7 +77,9 @@ names(bins) <- c('Gene','bin')
 
 #-----------------Plots by binning ----------------------------------
 byak <- merge(yak,bins)
-ggplot(byak,aes(
+factor(byak$bin) -> byak$bin
+ggplot(byak,aes(bin,Alpha)) + geom_boxplot() + coord_flip()
+
 
 
 

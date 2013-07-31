@@ -127,3 +127,9 @@
 
 #Alpha below -10 and non-significant TajimaD
 [1] "AcCoAS" "CG1599" "CG3590" "dco"    "Sam-S"  "SC35"  
+Non parametric test on pn/ps for both.
+Non parametric test on phosphatase and kinase.
+looking at all kinases/phosphatases to follow up on differences in Tajima's D
+list major GO term groups - ribosome biogenesis -- 40 
+branching and find lowest point of statistical enrichment?
+

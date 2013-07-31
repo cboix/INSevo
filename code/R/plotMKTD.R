@@ -10,7 +10,25 @@ matc <- matrix(unlist(TDc),ncol=2,byrow=F)
 dTDc <- data.frame(matc[,1],as.numeric(matc[,2]),'Control')
 names(dTDc) <- c('Gene','TajimaD','Set')
 
+tar <- read.delim('targets1',header=F)
+names(tar) <- 'Gene'
 
+yak <- read.table('SEMKproc.yakfulldiv')
+yakc <- read.table('SEMKproc.yakfulldivcontrol')
+yak <- cbind(yak,'Insulin')
+yakc <- cbind(yakc,'Control')
+names(yak)[ncol(yak)] <- 'Set'
+names(yakc)[ncol(yakc)] <- 'Set'
+
+TDy <- rbind(dTD,dTDc)
+TDyc <- merge(TDy,tar)
+TDyc$Set = 'Canonical'
+TDy <- rbind(TDy,TDyc)
+
+YAK <- rbind(yak,yakc)
+YAKc <- merge(YAK,tar)
+YAKc$Set = 'Canonical'
+YAK <- rbind(YAK,YAKc)
 
 library(ggplot2)
 png('~/Labwork/Rwork/TajimaD.png',height=1200,width=1200)
@@ -18,9 +36,9 @@ gTD <- ggplot(dTD,aes(Gene,TajimaD))
 gTD + geom_point(alpha=.8) + geom_hline(yintercept=c(0,-1.539,-1.765,-2.132,-2.462),color=c('black','red','red','red','red'),linetype='dashed') + theme_bw() + theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs(x="Gene",y="Tajima's D")
 dev.off()
 
-#SPECIES TOGETHER:
-sim <- read.table('TDMKtab.sim')
-yak <- read.table('TDMKtab.yak')
+# COMPARISON OF THE SPECIES
+sim <- read.table('SEMKproc.simfulldiv')
+yak <- read.table('SEMKproc.yakfulldiv')
 sim[,c(1,5,10)] -> dsim
 yak[,c(1,5,10)] -> dyak
 names(dyak) <- c('Gene','yAlpha','yakpvals')
@@ -30,9 +48,8 @@ dAlpha <- BOTH$sAlpha - BOTH$yAlpha
 cbind(BOTH,dAlpha) -> BOTH
 
 #Plotting:
-png('YakvSimAlpha.png',height=1000,width=1000)
-ggplot(BOTH,aes(sAlpha,yAlpha)) + geom_point(alpha=.8,aes(color=simpvals),size=2.75) +geom_point(alpha=.8,aes(color=yakpvals),size=1.75) + labs(x="Alpha of Simulans Divergence",y="Alpha of Yakuba Divergence") + scale_x_continuous(limits=c(-10,2)) + scale_y_continuous(limits=c(-10,2)) + scale_color_gradient(name="p.value")
-dev.off()
+gcomp <- ggplot(BOTH,aes(sAlpha,yAlpha)) + geom_point(alpha=.8,aes(color=simpvals),size=2.75) +geom_point(alpha=.8,aes(color=yakpvals),size=1.75) + labs(x="D. Simulans Alpha",y="D. Yakuba Alpha") + scale_x_continuous(limits=c(-10,2)) + scale_y_continuous(limits=c(-10,2)) + scale_color_gradient(name="p.value")
+ggsave('AlphabySpecies.png',gcomp,width=8,height=8,dpi=1200)
 
 png('AlphabySpecies2.png',width=1500,heigh=1500)
 ggplot(BOTH,aes(sAlpha,yAlpha,color=yakpvals)) + geom_point(alpha=.8,aes(color=simpvals),size=2.75) +geom_point(alpha=.8,aes(color=yakpvals),size=1.75) + labs(x="Alpha of Simulans Divergence",y="Alpha of Yakuba Divergence") + scale_x_continuous(limits=c(-10,2)) + scale_y_continuous(limits=c(-10,2)) + scale_color_gradient(name="p.value") + geom_text(data=BOTH,aes(sAlpha,yAlpha,label=Gene),size=2.5,vjust=1.5,hjust=.5)
