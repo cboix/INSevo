@@ -27,17 +27,35 @@ def read_motif_table(lines):
         info=proc[1:]
         d.update(zip(name,[info]))
     d['length'] = len(d['T'])
+    for i in range(0,d['length']):
+        total = float(d['A'][i]) + float(d['G'][i]) + float(d['T'][i]) + float(d['C'][i]) + 4
+        d['A'][i] = log((float(d['A'][i])+1)/total/.25)
+        d['C'][i] = log((float(d['C'][i])+1)/total/.25)
+        d['G'][i] = log((float(d['G'][i])+1)/total/.25)
+        d['T'][i] = log((float(d['T'][i])+1)/total/.25)
     return(d)
 
 #CREATION of the motif dictionaries:
-def read_PWMs(filename):
+def read_PWMs(filename,S2expressed,threshold):
+    with open(S2expressed,'r') as S2in:
+        S2EX=[]
+        names=[]
+        for line in S2in:
+            line = line.split("\n")[0]
+            line = line.split(" ")
+            f = float(line[1])
+            if (f > threshold):
+                S2EX.append(dict(name=line[0],fpkm=float(line[1])))
+                names.append(line[0])
     with open(filename,'r') as infile:
         PWM=[]
         lines = []
         for line in infile:
             lines.append(line)
             if len(lines) >= 5:
-                PWM.append(read_motif_table(lines))
+                dic = read_motif_table(lines)
+                if any(dic['fbgn'] in s for s in names):
+                    PWM.append(dic)
                 lines = []
         if len(lines) > 0:
             print('something left!')
@@ -82,11 +100,13 @@ def compare_gene(gene,directory,PWM,refresh):
     namein = directory + "/" + gene + ".yak.div"
     motifin = directory + "/" + gene + ".enh"
     nameout = directory + "/" + gene + ".out"
+    motifout = directory + "/" + gene + ".mot"
     if (os.path.exists(namein) and os.path.exists(motifin)):
-        if (not os.path.exists(nameout) or refresh):
+        if (not os.path.exists(nameout) or not os.path.exists(motifout) or refresh):
             #Make motif matrix:
             motifs=[]
             buff=[]
+            disrupt=[]
             with open(motifin,'r') as motin:
                 for line in motin:
                     line = line.split("\n")[0]
@@ -94,6 +114,7 @@ def compare_gene(gene,directory,PWM,refresh):
                     g = l[3]
                     iden = l[4]
                     motifs.append(dict(start=l[0],end=l[1],occ=l[2],gene=g,iden=iden))
+            whole = motifs
             with open(namein) as f:
                 #Go by line in f, instead of trying to cordon off the motifs first. 
                 for line in f:
@@ -107,11 +128,15 @@ def compare_gene(gene,directory,PWM,refresh):
                             if (int(m['end']) > int(m['start'])):
                                 if (int(l[2]) <= int(m['end']) and int(l[2]) >= int(m['start'])):
                                     outline = motif_mutation(l,m,PWM)
+                                    disrupt.append(m)
+                                    whole.remove(m)
                                     sy = 0
                                     break
                             else:
                                 if (int(l[2]) >= int(m['end']) and int(l[2]) <= int(m['start'])):
                                     outline = motif_mutation(l,m,PWM)
+                                    disrupt.append(m)
+                                    whole.remove(m)
                                     sy = 0
                                     break
                         if (sy == 1):
@@ -121,8 +146,16 @@ def compare_gene(gene,directory,PWM,refresh):
             with open(nameout,'a') as out:
                 for w in buff: 
                     out.write(w)
+            #Write disrupted and not disrupted mutations
+            with open(motifout,'a') as mot:
+                for w in whole:
+                    outline = w['start'] + " " + w['end'] + " " + w['occ'] + " " + w['gene'] + " SY " + w['iden'] + " " + gene + "\n"
+                    mot.write(outline)
+                for m in disrupt:
+                    outline = m['start'] + " " + m['end'] + " " + m['occ'] + " " + m['gene'] + " NS " + m['iden'] + " " + gene + "\n"
+                    mot.write(outline)
 
-PWM = read_PWMs('/net/home/carlesba/db/SSeq/PWMs')
+PWM = read_PWMs('/net/home/carlesba/db/SSeq/PWMs','/net/home/carlesba/db/SSeq/S2mid',3)
 
 with open(TARGETS,'r') as tar:
     for geneline in tar:

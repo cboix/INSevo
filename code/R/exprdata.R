@@ -25,8 +25,8 @@ nyak <- yak[!(yak$Gene %in% eyak$Gene),]
 eTD <- merge(expr,dTD)
 
 library(ggplot2)
-g1 <- ggplot(eTD,aes(TajimaD,slopes)) + geom_point()
-g2 <- ggplot(eyak,aes(Alpha,slopes)) + geom_point()
+g1 <- ggplot(eTD,aes(TajimaD,slopes)) + geom_point(alpha=.6)
+g2 <- ggplot(eyak,aes(Alpha,slopes)) + geom_point(alpha=.6)
 ggsave('SlopeTD.png',g1,width=4,height=4,dpi=1200)
 ggsave('SlopeAlpha.png',g2,width=4,height=4,dpi=1200)
 
@@ -69,6 +69,7 @@ datamatrix=as.matrix(expr[,4:12]-expr[,3])
 #datamatrix=as.matrix(timepart2.sig[,3:11]/timepart2.sig[,2])
 
 p <-pheatmap(datamatrix, clustering_distance_rows='correlation',cluster_cols=F)
+png('ExprHeatmap.png',width=6,height=6,res=1200,units='in')
 
 ord <- p$tree_row$order
 width <- 5

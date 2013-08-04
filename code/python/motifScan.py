@@ -1,11 +1,12 @@
 #!/usr/bin/python2.6
+# Scan for motifs that correspond to tfs expressed above a certain level.
 REFRESH=False #canonically false, but can be overwritten. THIS whole section should be parsed as args.
 DIRECTORY='/net/home/carlesba/db/SSeq/enhancers/'
 TARGETS= '/net/home/carlesba/project/dmel_targets'
 
 import os.path
 import sys
-from math import exp
+from math import exp,log
 
 # Must run script on its own / w/out "python"
 if (len(sys.argv) > 1):
@@ -24,18 +25,26 @@ def read_motif_table(lines):
         info=proc[1:]
         d.update(zip(name,[info]))
     d['length'] = len(d['T'])
+    for i in range(0,d['length']):
+        total = float(d['A'][i]) + float(d['G'][i]) + float(d['T'][i]) + float(d['C'][i]) + 4
+        d['A'][i] = log((float(d['A'][i])+1)/total/.25)
+        d['C'][i] = log((float(d['C'][i])+1)/total/.25)
+        d['G'][i] = log((float(d['G'][i])+1)/total/.25)
+        d['T'][i] = log((float(d['T'][i])+1)/total/.25)
     return(d)
 
 #CREATION of the motif dictionaries:
-def read_PWMs(filename,S2expressed):
+def read_PWMs(filename,S2expressed,threshold):
     with open(S2expressed,'r') as S2in:
         S2EX=[]
         names=[]
         for line in S2in:
             line = line.split("\n")[0]
             line = line.split(" ")
-            S2EX.append(dict(name=line[0],fpkm=float(line[1])))
-            names.append(line[0])
+            f = float(line[1])
+            if (f > threshold):
+                S2EX.append(dict(name=line[0],fpkm=float(line[1])))
+                names.append(line[0])
     with open(filename,'r') as infile:
         PWM=[]
         lines = []
@@ -130,10 +139,10 @@ def gene_compute(gene,directory,refresh):
             motifs=compute_file(namein,PWM,0.025)
             with open(nameout,'a') as out:
                 for m in motifs:
-                    outline = m['start'] + " " + m['end'] + " " + str(m['occ']) + " " + m['pwm'] + " " + m['iden'] + "\n"
+                    outline = m['start'] + " " + m['end'] + " " + str(m['occ']) + " " + m['pwm'] + " " + m['iden'] + " " + gene + "\n"
                     out.write(outline)
 
-PWM = read_PWMs('/net/home/carlesba/db/SSeq/PWMs','/net/home/carlesba/db/SSeq/S2mid')
+PWM = read_PWMs('/net/home/carlesba/db/SSeq/PWMs','/net/home/carlesba/db/SSeq/S2mid',3)
 
 # Loop over all gene targets and compute the enhancer searches for all:
 with open(TARGETS,'r') as tar:

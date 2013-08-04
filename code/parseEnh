@@ -1,7 +1,8 @@
 #!/bin/bash
 #CREATES the Yakuba mapping of enhancers from the StarrSeq database.
 PREFIX=/net/home/carlesba
-SSEQ=$PREFIX/db/SSeq ENHDIR=$PREFIX/db/SSeq/enhancers
+SSEQ=$PREFIX/db/SSeq 
+ENHDIR=$PREFIX/db/SSeq/enhancers
 FULLGENES=$PREFIX/db/DGRP/fullgenes
 INT=$PREFIX/db/Annotation/int-r5.51
 
@@ -10,11 +11,13 @@ if [ "$1" == "" ]
 then {
     TARGETS=$PREFIX/project/dmel_targets
     ENdiv=$PREFIX/project/divergence/ENH.yak.div
+    Type=yak
     INSM=$SSEQ/InsulinMotifs
 } elif [ "$1" == "CONTROL" ]
 then {
     TARGETS=$PREFIX/project/random_targets
     ENdiv=$PREFIX/project/divergence/ENH.yak.control.div
+    Type=control
     INSM=$SSEQ/InsulinMotifsControl
 } else {
     TARGETS=$1
@@ -126,8 +129,8 @@ then {
     do
         eval $( echo $p | awk '{printf("GENE=%s",$1)}' ) 
         ENOUT=$ENHDIR/$GENE\.out 
-        ENH=$ENHDIR/$GENE\.enh
-        ENBED=$ENHDIR/$GENE\_yak.bed
+        ENH=$ENHDIR/$GENE\.mot
+        ENBED=$ENHDIR/$GENE\.yak.div
         LNR=0
         eval $( awk 'END{printf("LNR=%s",NR)}' $ENH )
 
@@ -155,15 +158,15 @@ mkdir -p $SSEQ/Motif
 while read -r line
 do
         eval $( echo $line | awk '{printf("MOTIF=%s",$2)}' )
-        OUTmot=$SSEQ/Motif/$MOTIF\.div
+        OUTmot=$SSEQ/Motif/$Type\.$MOTIF\.div
 
         while read -r p 
         do 
             eval $( echo $p | awk '{printf("GENE=%s",$1)}' ) 
             LNR=0
             ENOUT=$ENHDIR/$GENE\.out 
-            ENH=$ENHDIR/$GENE\.enh
-            ENBED=$ENHDIR/$GENE\_yak.bed
+            ENH=$ENHDIR/$GENE\.mot
+            ENBED=$ENHDIR/$GENE\.yak.div
             eval $( awk -v mot=$MOTIF 'BEGIN{a=0}$0 ~ mot{a=a+1}END{printf("LNR=%s",a)}' $ENH )
             if [[ -s $ENOUT ]] 
             then {
@@ -177,6 +180,14 @@ do
         cat .$MOTIF\.tmp > $OUTmot
         rm -f .$MOTIF\.tmp
 done < $INSM\.top
+
+awk '$3 > .1{print $4,$5}' $INSM | sort | uniq -c | sort -rn | awk '{print $1,$2,$3}' > $INSM\.count
+#Here put python script TODO that creates R-readable table.
+
+# Creating table:
+rm -f $INSM\.tab
+# has to be: Directory, targets, countfile, outfile.
+$PREFIX/code/geneTable.py $ENHDIR $TARGETS $INSM\.count $INSM\.tab
 
 } fi
 
