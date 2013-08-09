@@ -34,46 +34,60 @@ HEADERS = create_headers(COUNTS,100) # NOTE That in fact, dm is only found at 30
 def gene_melt(gene,directory,headers,threshold):
     netin = directory + "/" + gene + ".net"
     motin = directory + "/" + gene + ".mot"
-    # Find the length of the gene:
-    length = sum(1 for line in open(netin))
-    # Create dictionary of the file
-    d={}
-    with open(motin) as mot:
-        for line in mot:
-            line = line.split(" ")
-            if float(line[2]) > threshold:
-                i = line[3] + line[4]
-                if not d.has_key(i):
-                    d[i]=1  #also: if not i in d
-                else:
-                    d[i]+=1
-    # Create the out string:
-    out = gene
-    for name in headers:
-        nameSY = name + "SY"
-        nameNS = name + "NS"
-        if not d.has_key(nameNS):
-            NS = '0'
-        else:
-            NS = str(d[nameNS])
-        if not d.has_key(nameSY):
-            SY = '0'
-        else:
-            SY = str(d[nameSY])
-        out = out + " " + SY + " " + NS
-    # Only output dictionary names that exist already:
-
+    if (os.path.exists(netin) and os.path.exists(motin)):
+        # Find the length of the gene:
+        length = sum(1 for line in open(netin))
+        # Create dictionary of the file
+        d={}
+        with open(motin) as mot:
+            for line in mot:
+                line = line.split(" ")
+                if float(line[2]) > threshold:
+                    i = line[3] + line[4]
+                    if not i in d:
+                        d[i]=1 #also: if not i in d
+                    else:
+                        d[i]+=1
+        # Create the out string:
+        out = gene
+        for name in headers:
+            nameSY = name + "SY"
+            nameNS = name + "NS"
+            if not nameNS in d:
+                NS = '0'
+            else:
+                NS = '%.3f' % (d[nameNS]/float(length))
+            if not nameSY in d:
+                SY = '0'
+            else:
+                SY = '%.3f' % (d[nameSY]/float(length))
+            out = out + " " + SY + " " + NS
+        out = out + " " + str(length) +"\n"
+        return(out)
+    else:
+        return('EMPTY')
+        # Only output dictionary names that exist already:
+    
 with open(TARGETS,'r') as tar:
     buffout = []
     for geneline in tar:
         g = geneline.split(" ")
-        buffout.append(gene_melt(g[0],DIRECTORY,HEADERS,0.1))
+        l = gene_melt(g[0],DIRECTORY,HEADERS,0.1)
+        if not l == 'EMPTY':
+            buffout.append(l)
 with open(OUTFILE,'a') as out:
     # TODO Write headers first so that it looks like an R table.
-    head = []
+    head = '"Gene" '
     for name in HEADERS:
         head = head + '"' + name + 'SY"' + ' "' + name + 'NS" '
+    head = head + '"Length"\n'
     out.write(head)
+    num =1
     for line in buffout:
+        line = '"' + str(num) + '" ' + line
         out.write(line)
+        num +=1
+#Use occupancy values as da counts.
+
+
 

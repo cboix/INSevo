@@ -18,8 +18,8 @@ cbind(BOTH,dAlpha) -> BOTH
 expr <- read.delim('~/Labwork/Expdata/targets.exp',header=F,sep=" ")
 names(expr) <- c('FBgn','Gene','T0','T1','T2','T3','T4','T5','T6','T7','T8','T9')
 slopes <- sapply(1:nrow(expr),data=expr,function(i,data){a <- as.numeric(as.character(data[i,3:12])); b <- 1:10; dtf <- data.frame(cbind(a,b)); lm(a~b,dtf) -> model; return(model$coefficients[2]);})
-mEXPR <- melt(expr,id.vars=c('Gene','FBgn','slopes'),measure.vars=c('T0','T1','T2','T3','T4','T5','T6','T7','T8','T9'))
 expr <- cbind(expr,slopes)
+mEXPR <- melt(expr,id.vars=c('Gene','FBgn','slopes'),measure.vars=c('T0','T1','T2','T3','T4','T5','T6','T7','T8','T9'))
 eyak <- merge(expr,yak)
 nyak <- yak[!(yak$Gene %in% eyak$Gene),]
 eTD <- merge(expr,dTD)
@@ -33,12 +33,12 @@ ggsave('SlopeAlpha.png',g2,width=4,height=4,dpi=1200)
 eyak$slopes < 0 -> down
 cbind(eyak,down) -> ed
 names(ed)[ncol(ed)] <- "Dir"
-data.frame(matrix(c(TRUE,FALSE,"down","up"),nrow=2,ncol=2)) -> dummy
+data.frame(matrix(c(TRUE,FALSE,"Down","Up"),nrow=2,ncol=2)) -> dummy
 names(dummy) <- c('Dir','Direction')
 merge(ed,dummy) -> ed
 ggplot(ed,aes(TajimaD,Alpha,color=slopes)) + geom_point() + facet_wrap(~Direction)
-up <- ed[ed$Direction == 'up',]
-down <- ed[ed$Direction == 'down',]
+up <- ed[ed$Direction == 'Up',]
+down <- ed[ed$Direction == 'Down',]
 with(down,1-mean(Ds)/mean(Dn)*mean(Pn/(Ps +1)))
 # [1] -0.7877475
 with(up,1-mean(Ds)/mean(Dn)*mean(Pn/(Ps +1)))
@@ -51,6 +51,20 @@ mean(up$TajimaD)
 # [1] -1.632076
 mean(nyak$TajimaD)
 # [1] -1.622571
+
+#   To test for enrichment in either direction:
+#   SEG <- data.frame(Gene=ed$Gene,Dir=ed$Direction)
+#   read.table('~/Labwork/StarrSeq/InsulinMotifs.tab') -> IM
+   merge(IM,SEG,all=TRUE) -> IMS
+   IMS[IMS$Dir == 'Down',] -> down
+   IMS[IMS$Dir == 'Up',] -> up
+   colSums(na.omit(up[,2:105]))/nrow(up) -> upsums
+   colSums(na.omit(down[,2:105]))/nrow(down) -> dsums
+   rbind(upsums,dsums) -> sums
+   data.frame(sums,Dir=c('Up','Down')) -> sums
+   melt(sums,id.vars='Dir') -> sm
+
+
 
 #----------------heatmap and binning -------------------------------
 library(pheatmap)

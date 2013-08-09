@@ -9,14 +9,14 @@ names(sums) <- c('Set','Total')
 
 
 #First create the huge annotated table:
-SEMK <- read.table('SEMKproc.yakfulldiv')
-TD <- read.delim('TajimaD',header=F,sep=" ")
+SEMK <- read.table('~/Labwork/Rwork/SEMKproc.yakfulldiv')
+TD <- read.delim('~/Labwork/Rwork/TajimaD',header=F,sep=" ")
 mat <- matrix(unlist(TD),ncol=2,byrow=F)
 dTD <- data.frame(mat[,1],as.numeric(mat[,2]),'Insulin')
 names(dTD) <- c('Gene','TajimaD','Set')
 TDMK <- merge(SEMK,dTD,all=TRUE)
 
-tar <- read.delim('targets1',header=F)
+tar <- read.delim('~/Labwork/Rwork/targets1',header=F)
 names(tar) <- 'Gene'
 tdmk <- merge(TDMK,tar)
 tdmk$Set <- 'Canonical'
@@ -24,7 +24,7 @@ for (gene in tar$Gene){TDMK <- subset(TDMK,Gene!=gene)}
 TDMK <- rbind(TDMK,tdmk)
 
 #Fold in the simulans data: 
-SEMK <- read.table('SEMKproc.simfulldiv')
+SEMK <- read.table('~/Labwork/Rwork/SEMKproc.simfulldiv')
 SEMK <- SEMK[,c(1,5:7,10)]
 names(SEMK) <- c('Gene','Alpha.sim','Ds.sim','Dn.sim','pvalsout.sim')
 TDMK <- merge(TDMK,SEMK,all=TRUE)

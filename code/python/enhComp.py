@@ -61,6 +61,7 @@ def read_PWMs(filename,S2expressed,threshold):
             print('something left!')
         return(PWM)
 
+# TODO Catch a bug?
 def motif_mutation(l,m,PWM):
     position = int(l[2]) - int(m['start'])
     #could be more efficient??

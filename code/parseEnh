@@ -67,9 +67,7 @@ then {
     cat .$GENE\tmp > $NET
     rm .$GENE\tmp
 } fi
-
 done < $TARGETS
-
 
 #NOW to get the sequences of each enhancer:
 #note we need to make sure that the enhancers do not! overlap (that would be computationally annoying.)
@@ -181,7 +179,7 @@ do
         rm -f .$MOTIF\.tmp
 done < $INSM\.top
 
-awk '$3 > .1{print $4,$5}' $INSM | sort | uniq -c | sort -rn | awk '{print $1,$2,$3}' > $INSM\.count
+awk '$3 > 0.1{print $4,$5}' $INSM | sort | uniq -c | sort -rn | awk '{print $1,$2,$3}' > $INSM\.count
 #Here put python script TODO that creates R-readable table.
 
 # Creating table:

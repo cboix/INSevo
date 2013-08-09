@@ -2,6 +2,9 @@
 # Two folders, ~/Labwork/siggenes hAandlTD/ and lAandlTD/
 num <- 2
 folders <- c('~/Labwork/siggenes/yak/hAandlTD/','~/Labwork/siggenes/yak/lAandlTD/')
+folders <- c('~/Labwork/siggenes/yak/Cf2/','~/Labwork/siggenes/yak/Foxo/')
+folders2<- c('~/Labwork/siggenes/DGRP/Cf2/','~/Labwork/siggenes/DGRP/Foxo/')
+
 folders2 <- c('~/Labwork/siggenes/DGRP/hATD/','~/Labwork/siggenes/DGRP/lATD/')
 pngnames <- c("highAlpha.DnDs.yak","lowAlpha.DnDs.yak")
 titles <- c("Genes with high alpha and significant Tajima's D in Yakuba","Genes with low Alpha and significant Tajima's D in Yakuba")
